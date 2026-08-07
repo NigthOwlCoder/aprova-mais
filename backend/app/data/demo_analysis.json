@@ -1,0 +1,119 @@
+{
+  "id": "demo-barueri-residencial",
+  "status": "completed",
+  "created_at": "2026-08-06T12:00:00-03:00",
+  "project": {
+    "name": "Residência Alameda Barueri",
+    "municipality": "Barueri",
+    "project_type": "Residencial unifamiliar",
+    "address": "Alphaville, Barueri — SP",
+    "lot_area": 500,
+    "zoning": "ZRE-1"
+  },
+  "documents": [
+    {"name": "Projeto arquitetônico — revisão 03.pdf", "pages": 12},
+    {"name": "Legislação urbanística de Barueri.pdf", "pages": 48},
+    {"name": "Regulamento residencial.pdf", "pages": 22}
+  ],
+  "summary": {
+    "score": 69,
+    "confidence": 78,
+    "compliant": 4,
+    "warnings": 2,
+    "non_compliant": 2,
+    "not_identified": 1
+  },
+  "items": [
+    {
+      "id": "RULE-001",
+      "topic": "Recuo frontal",
+      "requirement": "Mínimo de 5,00 m",
+      "project_value": "5,20 m",
+      "status": "COMPLIANT",
+      "source": "Lei de Zoneamento, Art. 42, pág. 18 · Projeto, pág. 2",
+      "recommendation": "Manter a implantação indicada.",
+      "confidence": 0.94
+    },
+    {
+      "id": "RULE-002",
+      "topic": "Taxa de ocupação",
+      "requirement": "Máximo de 50%",
+      "project_value": "46,8%",
+      "status": "COMPLIANT",
+      "source": "Lei de Zoneamento, Art. 39, pág. 17 · Projeto, pág. 1",
+      "recommendation": "Item atendido no quadro de áreas.",
+      "confidence": 0.96
+    },
+    {
+      "id": "RULE-003",
+      "topic": "Coeficiente de aproveitamento",
+      "requirement": "Máximo de 1,00",
+      "project_value": "0,91",
+      "status": "COMPLIANT",
+      "source": "Lei de Zoneamento, Anexo IV, pág. 44 · Projeto, pág. 1",
+      "recommendation": "Item atendido.",
+      "confidence": 0.92
+    },
+    {
+      "id": "RULE-004",
+      "topic": "Vagas de estacionamento",
+      "requirement": "Mínimo de 2 vagas",
+      "project_value": "2 vagas",
+      "status": "COMPLIANT",
+      "source": "Código de Obras, Art. 81, pág. 31 · Projeto, pág. 3",
+      "recommendation": "Confirmar dimensões livres na revisão executiva.",
+      "confidence": 0.88
+    },
+    {
+      "id": "RULE-005",
+      "topic": "Área permeável",
+      "requirement": "Mínimo de 20%",
+      "project_value": "21,2%",
+      "status": "WARNING",
+      "source": "Lei de Zoneamento, Art. 45, pág. 19 · Projeto, pág. 1",
+      "recommendation": "Margem pequena; confirmar áreas e revestimentos drenantes.",
+      "confidence": 0.74
+    },
+    {
+      "id": "RULE-006",
+      "topic": "Altura máxima",
+      "requirement": "Máximo de 9,00 m",
+      "project_value": "8,75 m",
+      "status": "WARNING",
+      "source": "Regulamento residencial, item 4.6, pág. 9 · Projeto, pág. 7",
+      "recommendation": "Validar a cota a partir do perfil natural do terreno.",
+      "confidence": 0.68
+    },
+    {
+      "id": "RULE-007",
+      "topic": "Recuo lateral direito",
+      "requirement": "Mínimo de 2,00 m",
+      "project_value": "1,60 m",
+      "status": "NON_COMPLIANT",
+      "source": "Regulamento residencial, item 3.2, pág. 7 · Projeto, pág. 2",
+      "recommendation": "Revisar a implantação e ampliar o recuo em pelo menos 0,40 m.",
+      "confidence": 0.91
+    },
+    {
+      "id": "RULE-008",
+      "topic": "Piscina — afastamento",
+      "requirement": "Mínimo de 1,50 m da divisa",
+      "project_value": "1,10 m",
+      "status": "NON_COMPLIANT",
+      "source": "Regulamento residencial, item 7.3, pág. 14 · Projeto, pág. 4",
+      "recommendation": "Reposicionar a piscina ou revisar suas dimensões.",
+      "confidence": 0.86
+    },
+    {
+      "id": "RULE-009",
+      "topic": "Movimentação de terra",
+      "requirement": "Indicar volumes de corte e aterro",
+      "project_value": "Não localizado",
+      "status": "NOT_IDENTIFIED",
+      "source": "Código de Obras, Art. 58, pág. 24 · Projeto sem referência localizada",
+      "recommendation": "Solicitar memorial de terraplenagem para revisão humana.",
+      "confidence": 0.35
+    }
+  ],
+  "disclaimer": "Esta análise é preliminar e tem caráter informativo. O resultado não substitui a avaliação de um arquiteto, engenheiro, responsável técnico, condomínio ou órgão público competente."
+}

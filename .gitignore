@@ -1,0 +1,15 @@
+.venv/
+__pycache__/
+.pytest_cache/
+*.py[cod]
+.env
+node_modules/
+dist/
+*.tsbuildinfo
+tmp/
+uploads/*
+!uploads/.gitkeep
+backend/app/reports/*
+!backend/app/reports/.gitkeep
+backend/app/data/analyses/*
+!backend/app/data/analyses/.gitkeep
