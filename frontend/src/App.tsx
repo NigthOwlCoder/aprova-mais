@@ -174,9 +174,10 @@ export default function App() {
           <button className="back" onClick={() => setView("home")}>← Voltar</button>
           <div className="page-heading"><span>Nova análise</span><h1>Conte-nos sobre o projeto</h1><p>Envie o conjunto de PDFs que compõe o processo. É necessário selecionar pelo menos um documento.</p></div>
           <form className="analysis-form" onSubmit={submitAnalysis}>
+            <p className="required-legend"><span>*</span> Campos obrigatórios</p>
             <div className="form-grid">
-              <label>Nome do projeto<input name="project_name" required placeholder="Ex.: Residência Alameda" /></label>
-              <label>Município atendido<select name="municipality" required defaultValue="Barueri - SP"><option>Barueri - SP</option></select></label>
+              <label>Nome do projeto <span className="required-mark" aria-hidden="true">*</span><input name="project_name" required placeholder="Ex.: Residência Alameda" /></label>
+              <label>Município atendido <span className="required-mark" aria-hidden="true">*</span><select name="municipality" required defaultValue="Barueri - SP"><option>Barueri - SP</option></select></label>
               <label>Tipo de projeto<select name="project_type" defaultValue="Residencial unifamiliar"><option>Residencial unifamiliar</option><option>Residencial multifamiliar</option><option>Comercial</option><option>Institucional</option></select></label>
               <label>Zoneamento<input name="zoning" placeholder="Quando conhecido" /></label>
               <label className="wide">Endereço<input name="address" placeholder="Logradouro, número e bairro" /></label>
@@ -189,7 +190,7 @@ export default function App() {
               <FileField name="condominium_pdf" title="Regulamento do condomínio" />
               <FileField name="descriptive_memorial_pdf" title="Memorial descritivo" />
             </div>
-            <label className="terms-check"><input name="accepted_terms" type="checkbox" required /><span>Li e aceito os <a href="/termos-de-uso.html" target="_blank">Termos de Uso</a> e o <a href="/aviso-de-privacidade.html" target="_blank">Aviso de Privacidade</a>. Os documentos não serão usados para treinamento sem uma autorização voluntária e separada.</span></label>
+            <label className="terms-check"><input name="accepted_terms" type="checkbox" required /><span><b className="required-mark" aria-hidden="true">*</b> Li e aceito os <a href="/termos-de-uso.html" target="_blank">Termos de Uso</a> e o <a href="/aviso-de-privacidade.html" target="_blank">Aviso de Privacidade</a>. Os documentos não serão usados para treinamento sem uma autorização voluntária e separada.</span></label>
             {error && <p className="error" role="alert">{error}</p>}
             <button className="primary submit" type="submit">Analisar projeto <span>→</span></button>
           </form>
@@ -224,7 +225,7 @@ function FileField({ name, title, required = false }: { name: string; title: str
   return <label className={`file-field ${selectedFile ? "selected" : ""}`}>
     <span className="file-icon">{selectedFile ? "✓" : "PDF"}</span>
     <span className="file-copy">
-      <strong>{title}</strong>
+      <strong>{title}{required && <span className="required-mark" aria-hidden="true"> *</span>}</strong>
       {selectedFile
         ? <small className="selected-name" title={selectedFile.name}>{selectedFile.name}<em>{size} · arquivo selecionado</em></small>
         : <small>{required ? "Obrigatório" : "Opcional"} · clique para escolher</small>}
@@ -241,7 +242,7 @@ function MultiFileField({ name, title, required = false }: { name: string; title
   return <label className={`file-field multi-file ${selectedFiles.length ? "selected" : ""}`}>
     <span className="file-icon">{selectedFiles.length ? selectedFiles.length : "PDF"}</span>
     <span className="file-copy">
-      <strong>{title}</strong>
+      <strong>{title}{required && <span className="required-mark" aria-hidden="true"> *</span>}</strong>
       {selectedFiles.length
         ? <span className="file-list">{selectedFiles.map((file) => <small className="selected-name" title={file.name} key={`${file.name}-${file.size}`}><b>✓</b> {file.name}</small>)}<em>{selectedFiles.length} arquivos · {formatFileSize(totalSize)} no total</em></span>
         : <small>{required ? "Obrigatório" : "Opcional"} · selecione um ou vários PDFs</small>}
