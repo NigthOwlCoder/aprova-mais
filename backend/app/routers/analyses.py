@@ -56,3 +56,9 @@ def get_analysis(analysis_id: str) -> AnalysisResponse:
     if analysis is None:
         raise HTTPException(status_code=404, detail="Análise não encontrada")
     return analysis
+
+
+@router.delete("/{analysis_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_analysis(analysis_id: str) -> None:
+    if not service.delete(analysis_id):
+        raise HTTPException(status_code=404, detail="Análise não encontrada")
