@@ -72,7 +72,8 @@
       "status": "WARNING",
       "source": "Lei de Zoneamento, Art. 45, pág. 19 · Projeto, pág. 1",
       "recommendation": "Margem pequena; confirmar áreas e revestimentos drenantes.",
-      "confidence": 0.74
+      "confidence": 0.74,
+      "annotation": {"marker": 1, "x": 68, "y": 82, "comment": "Confirmar no quadro de áreas quais superfícies foram consideradas permeáveis."}
     },
     {
       "id": "RULE-006",
@@ -92,7 +93,8 @@
       "status": "NON_COMPLIANT",
       "source": "Regulamento residencial, item 3.2, pág. 7 · Projeto, pág. 2",
       "recommendation": "Revisar a implantação e ampliar o recuo em pelo menos 0,40 m.",
-      "confidence": 0.91
+      "confidence": 0.91,
+      "annotation": {"marker": 2, "x": 82, "y": 38, "comment": "A cota indicada nesta lateral é inferior ao afastamento mínimo informado."}
     },
     {
       "id": "RULE-008",
@@ -102,7 +104,8 @@
       "status": "NON_COMPLIANT",
       "source": "Regulamento residencial, item 7.3, pág. 14 · Projeto, pág. 4",
       "recommendation": "Reposicionar a piscina ou revisar suas dimensões.",
-      "confidence": 0.86
+      "confidence": 0.86,
+      "annotation": {"marker": 3, "x": 78, "y": 70, "comment": "Revisar o afastamento entre a piscina e a divisa do lote."}
     },
     {
       "id": "RULE-009",

@@ -9,6 +9,12 @@ export interface AnalysisItem {
   source: string;
   recommendation: string;
   confidence: number;
+  annotation?: {
+    marker: number;
+    x: number;
+    y: number;
+    comment: string;
+  };
 }
 
 export interface DemoAnalysis {

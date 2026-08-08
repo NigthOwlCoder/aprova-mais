@@ -1,4 +1,5 @@
 import json
+import shutil
 from datetime import UTC, datetime
 from pathlib import Path
 from uuid import UUID, uuid4
@@ -14,6 +15,7 @@ BACKEND_DIR = Path(__file__).resolve().parents[2]
 PROJECT_DIR = BACKEND_DIR.parent
 UPLOAD_ROOT = PROJECT_DIR / "uploads"
 ANALYSIS_ROOT = BACKEND_DIR / "app" / "data" / "analyses"
+RETENTION_SECONDS = 24 * 60 * 60
 
 
 class AnalysisService:
@@ -21,6 +23,7 @@ class AnalysisService:
         self.files = FileService(UPLOAD_ROOT)
         self.pdf = PdfService()
         ANALYSIS_ROOT.mkdir(parents=True, exist_ok=True)
+        self._purge_expired()
 
     async def create(
         self,
@@ -50,6 +53,10 @@ class AnalysisService:
                     )
                 )
 
+        # The original PDFs are not needed after synchronous text extraction.
+        # Removing them minimizes exposure of drawings, signatures and personal data.
+        shutil.rmtree(destination, ignore_errors=True)
+
         analysis = AnalysisResponse(
             id=analysis_id,
             status=AnalysisStatus.DOCUMENTS_READ,
@@ -63,10 +70,26 @@ class AnalysisService:
         return analysis
 
     def get(self, analysis_id: str) -> AnalysisResponse | None:
+        self._purge_expired()
         path = self._analysis_path(analysis_id)
         if not path.is_file():
             return None
         return AnalysisResponse.model_validate(json.loads(path.read_text(encoding="utf-8")))
+
+    def delete(self, analysis_id: str) -> bool:
+        path = self._analysis_path(analysis_id)
+        if not path.is_file():
+            return False
+        path.unlink()
+        shutil.rmtree(UPLOAD_ROOT / analysis_id, ignore_errors=True)
+        return True
+
+    @staticmethod
+    def _purge_expired() -> None:
+        now = datetime.now(UTC).timestamp()
+        for path in ANALYSIS_ROOT.glob("*.json"):
+            if now - path.stat().st_mtime > RETENTION_SECONDS:
+                path.unlink(missing_ok=True)
 
     @staticmethod
     def _analysis_path(analysis_id: str) -> Path:

@@ -44,6 +44,17 @@ def test_get_unknown_analysis() -> None:
     assert response.status_code == 404
 
 
+def test_delete_analysis() -> None:
+    created = client.post(
+        "/api/analyses",
+        data={"project_name": "Projeto descartável", "municipality": "Barueri"},
+        files={"project_pdf": ("projeto.pdf", make_pdf(), "application/pdf")},
+    )
+    analysis_id = created.json()["id"]
+    assert client.delete(f"/api/analyses/{analysis_id}").status_code == 204
+    assert client.get(f"/api/analyses/{analysis_id}").status_code == 404
+
+
 def test_demo_analysis_has_required_status_mix() -> None:
     response = client.get("/api/analyses/demo")
     assert response.status_code == 200
