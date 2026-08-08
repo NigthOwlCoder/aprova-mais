@@ -32,11 +32,12 @@ def test_create_and_get_analysis() -> None:
     payload = created.json()
     assert payload["status"] == "documents_read"
     assert payload["documents"][0]["page_count"] == 1
-    assert "Area do terreno" in payload["documents"][0]["extracted_text"]
+    assert "extracted_text" not in payload["documents"][0]
 
     fetched = client.get(f"/api/analyses/{payload['id']}")
     assert fetched.status_code == 200
-    assert fetched.json() == payload
+    assert fetched.json()["id"] == payload["id"]
+    assert "Area do terreno" in fetched.json()["documents"][0]["extracted_text"]
 
 
 def test_get_unknown_analysis() -> None:
@@ -81,6 +82,16 @@ def test_create_analysis_with_multiple_project_documents() -> None:
     )
     assert response.status_code == 201
     assert len(response.json()["documents"]) == 2
+
+
+def test_invalid_pdf_identifies_the_file() -> None:
+    response = client.post(
+        "/api/analyses",
+        data={"project_name": "Casa MA", "municipality": "Barueri - SP"},
+        files={"project_pdf": ("prancha-problematica.pdf", b"not-a-pdf", "application/pdf")},
+    )
+    assert response.status_code == 422
+    assert "prancha-problematica" in response.json()["detail"]
 
 
 def test_production_frontend_is_served_by_backend() -> None:

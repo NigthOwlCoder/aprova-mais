@@ -4,7 +4,7 @@ from typing import Annotated, Any
 
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile, status
 
-from app.models.analysis import AnalysisResponse
+from app.models.analysis import AnalysisReceipt, AnalysisResponse
 from app.models.project import ProjectMetadata
 from app.services.analysis_service import AnalysisService
 
@@ -13,7 +13,7 @@ service = AnalysisService()
 DEMO_PATH = Path(__file__).resolve().parents[1] / "data" / "demo_analysis.json"
 
 
-@router.post("", response_model=AnalysisResponse, status_code=status.HTTP_201_CREATED)
+@router.post("", response_model=AnalysisReceipt, status_code=status.HTTP_201_CREATED)
 async def create_analysis(
     project_name: Annotated[str, Form(min_length=1)],
     municipality: Annotated[str, Form(min_length=1)],
@@ -25,7 +25,7 @@ async def create_analysis(
     regulation_pdf: UploadFile | None = File(None),
     condominium_pdf: UploadFile | None = File(None),
     descriptive_memorial_pdf: UploadFile | None = File(None),
-) -> AnalysisResponse:
+) -> AnalysisReceipt:
     metadata = ProjectMetadata(
         name=project_name,
         municipality=municipality,
@@ -34,7 +34,7 @@ async def create_analysis(
         lot_area=lot_area,
         zoning=zoning,
     )
-    return await service.create(
+    analysis = await service.create(
         metadata=metadata,
         files={
             "project": project_pdf,
@@ -43,6 +43,7 @@ async def create_analysis(
             "descriptive_memorial": descriptive_memorial_pdf,
         },
     )
+    return AnalysisReceipt.model_validate(analysis.model_dump())
 
 
 @router.get("/demo", response_model=dict[str, Any])

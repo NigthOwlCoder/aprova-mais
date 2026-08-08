@@ -34,28 +34,28 @@ class AnalysisService:
         destination = UPLOAD_ROOT / analysis_id
         documents: list[StoredDocument] = []
 
-        for document_type, uploads in files.items():
-            if uploads is None:
-                continue
-            upload_list = uploads if isinstance(uploads, list) else [uploads]
-            for upload in upload_list:
-                path, size = await self.files.save_pdf(upload, destination)
-                text, page_count = self.pdf.extract_text(path)
-                documents.append(
-                    StoredDocument(
-                        document_type=document_type,
-                        original_name=upload.filename or path.name,
-                        stored_name=path.name,
-                        content_type=upload.content_type or "application/pdf",
-                        size_bytes=size,
-                        page_count=page_count,
-                        extracted_text=text,
+        try:
+            for document_type, uploads in files.items():
+                if uploads is None:
+                    continue
+                upload_list = uploads if isinstance(uploads, list) else [uploads]
+                for upload in upload_list:
+                    path, size = await self.files.save_pdf(upload, destination)
+                    text, page_count = self.pdf.extract_text(path)
+                    documents.append(
+                        StoredDocument(
+                            document_type=document_type,
+                            original_name=upload.filename or path.name,
+                            stored_name=path.name,
+                            content_type=upload.content_type or "application/pdf",
+                            size_bytes=size,
+                            page_count=page_count,
+                            extracted_text=text,
+                        )
                     )
-                )
-
-        # The original PDFs are not needed after synchronous text extraction.
-        # Removing them minimizes exposure of drawings, signatures and personal data.
-        shutil.rmtree(destination, ignore_errors=True)
+        finally:
+            # The original PDFs are removed even when one document cannot be read.
+            shutil.rmtree(destination, ignore_errors=True)
 
         analysis = AnalysisResponse(
             id=analysis_id,
