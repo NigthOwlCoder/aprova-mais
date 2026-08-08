@@ -112,6 +112,7 @@ export default function App() {
           <section className="hero" aria-labelledby="hero-title">
             <div className="hero-copy">
               <div className="eyebrow">Menos retrabalho. Mais aprovações.</div>
+              <div className="availability">Disponível inicialmente para Barueri — SP</div>
               <h1 id="hero-title"><span>Aprove</span> seu projeto arquitetônico na Prefeitura <span>mais</span> rápido</h1>
               <p>Confira se seu projeto está pronto para aprovação na Prefeitura.</p>
               <div className="hero-actions">
@@ -139,7 +140,7 @@ export default function App() {
             <div className="section-intro"><span>Recursos para arquitetos</span><h2>Uma conferência técnica completa antes do protocolo.</h2></div>
             <div className="how-it-works">
               <article><span className="card-icon">📄</span><small>01</small><h3>Projeto</h3><p>Faça upload do projeto arquitetônico.</p></article>
-              <article><span className="card-icon">🏛️</span><small>02</small><h3>Legislação</h3><p>Selecione a Prefeitura ou envie a legislação.</p></article>
+              <article><span className="card-icon">🏛️</span><small>02</small><h3>Legislação de Barueri</h3><p>Confira o projeto com base na legislação municipal de Barueri — SP.</p></article>
               <article><span className="card-icon">📋</span><small>03</small><h3>Conferência Técnica</h3><p>Confira automaticamente os pontos que precisam de revisão antes do protocolo.</p></article>
               <article><span className="card-icon">✅</span><small>04</small><h3>Relatório Técnico</h3><p>Receba um checklist completo com recomendações para revisão.</p></article>
             </div>
@@ -158,7 +159,7 @@ export default function App() {
           <form className="analysis-form" onSubmit={submitAnalysis}>
             <div className="form-grid">
               <label>Nome do projeto<input name="project_name" required placeholder="Ex.: Residência Alameda" /></label>
-              <label>Município<input name="municipality" required defaultValue="Barueri" /></label>
+              <label>Município atendido<select name="municipality" required defaultValue="Barueri - SP"><option>Barueri - SP</option></select></label>
               <label>Tipo de projeto<select name="project_type" defaultValue="Residencial unifamiliar"><option>Residencial unifamiliar</option><option>Residencial multifamiliar</option><option>Comercial</option><option>Institucional</option></select></label>
               <label>Zoneamento<input name="zoning" placeholder="Quando conhecido" /></label>
               <label className="wide">Endereço<input name="address" placeholder="Logradouro, número e bairro" /></label>
@@ -167,7 +168,7 @@ export default function App() {
             <div className="document-help"><strong>Documentos do processo</strong><span>Selecione todas as pranchas, levantamentos, RRTs e demais PDFs que serão protocolados.</span></div>
             <div className="uploads">
               <MultiFileField name="project_pdf" title="Documentos do projeto" required />
-              <FileField name="regulation_pdf" title="Legislação municipal" />
+              <FileField name="regulation_pdf" title="Legislação complementar" />
               <FileField name="condominium_pdf" title="Regulamento do condomínio" />
               <FileField name="descriptive_memorial_pdf" title="Memorial descritivo" />
             </div>
