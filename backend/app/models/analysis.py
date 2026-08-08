@@ -25,3 +25,17 @@ class AnalysisResponse(BaseModel):
     documents: list[StoredDocument]
     disclaimer: str = DISCLAIMER
 
+
+class DocumentReceipt(BaseModel):
+    document_type: str
+    original_name: str
+    size_bytes: int
+    page_count: int
+
+
+class AnalysisReceipt(BaseModel):
+    id: str
+    status: AnalysisStatus
+    created_at: datetime
+    project: ProjectMetadata
+    documents: list[DocumentReceipt]

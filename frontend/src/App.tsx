@@ -19,6 +19,15 @@ const processingSteps = [
   "Gerando relatório",
 ];
 
+async function loadDemoWithRetry() {
+  try {
+    return await loadDemo();
+  } catch {
+    await new Promise((resolve) => window.setTimeout(resolve, 800));
+    return loadDemo();
+  }
+}
+
 export default function App() {
   const [view, setView] = useState<View>("home");
   const [analysis, setAnalysis] = useState<DemoAnalysis | null>(null);
@@ -47,7 +56,7 @@ export default function App() {
     setView("processing");
     setActiveStep(0);
     try {
-      const data = await loadDemo();
+      const data = await loadDemoWithRetry();
       setReportOrigin("demo");
       setActiveStep(4);
       window.setTimeout(() => { setAnalysis(data); setView("result"); }, 300);
@@ -65,9 +74,17 @@ export default function App() {
     setEstimatedSeconds(Math.min(180, Math.max(60, Math.round(45 + files.length * 12 + totalMegabytes * 2))));
     setError("");
     setView("processing");
+    let receipt: { id: string };
     try {
-      const receipt = await createAnalysis(formData);
-      const demonstration = await loadDemo();
+      receipt = await createAnalysis(formData);
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : "Não foi possível enviar o projeto. Tente novamente.");
+      setView("form");
+      return;
+    }
+
+    try {
+      const demonstration = await loadDemoWithRetry();
       setAnalysis({
         ...demonstration,
         id: receipt.id,
@@ -84,8 +101,8 @@ export default function App() {
       setReportOrigin("upload");
       setActiveStep(4);
       setView("result");
-    } catch {
-      setError("Não foi possível enviar o projeto. Revise o PDF e tente novamente.");
+    } catch (cause) {
+      setError(`Os ${files.length} documentos foram recebidos, mas o relatório não pôde ser aberto agora. Código da análise: ${receipt.id}. Tente carregar a demonstração novamente.`);
       setView("form");
     }
   }
