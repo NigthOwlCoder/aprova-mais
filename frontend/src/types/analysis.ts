@@ -28,6 +28,12 @@ export interface DemoAnalysis {
     zoning: string;
   };
   documents: Array<{ name: string; pages: number }>;
+  legislation_basis?: {
+    title: string;
+    version: string;
+    source: string;
+    registered_at: string;
+  };
   summary: {
     score: number;
     confidence: number;

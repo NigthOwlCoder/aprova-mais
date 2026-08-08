@@ -15,6 +15,12 @@
     {"name": "Legislação urbanística de Barueri.pdf", "pages": 48},
     {"name": "Regulamento residencial.pdf", "pages": 22}
   ],
+  "legislation_basis": {
+    "title": "Código de Edificações de Barueri",
+    "version": "Alteração pela Lei Complementar nº 349/2015",
+    "source": "https://portal.barueri.sp.gov.br/arquivos/sites/spcu/codigo_de_edificacoes_alteracao_349.2015.pdf",
+    "registered_at": "08/08/2026"
+  },
   "summary": {
     "score": 69,
     "confidence": 78,
