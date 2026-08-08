@@ -94,6 +94,46 @@ def test_invalid_pdf_identifies_the_file() -> None:
     assert "prancha-problematica" in response.json()["detail"]
 
 
+def test_empty_optional_file_fields_are_ignored() -> None:
+    response = client.post(
+        "/api/analyses",
+        data={"project_name": "Casa MA", "municipality": "Barueri - SP"},
+        files=[
+            ("project_pdf", ("projeto.pdf", make_pdf(), "application/pdf")),
+            ("regulation_pdf", ("", b"", "application/octet-stream")),
+            ("condominium_pdf", ("", b"", "application/octet-stream")),
+            ("descriptive_memorial_pdf", ("", b"", "application/octet-stream")),
+        ],
+    )
+    assert response.status_code == 201
+    assert [document["original_name"] for document in response.json()["documents"]] == [
+        "projeto.pdf"
+    ]
+
+
+def test_other_municipality_requires_local_regulation() -> None:
+    response = client.post(
+        "/api/analyses",
+        data={"project_name": "Casa", "municipality": "Osasco - SP"},
+        files={"project_pdf": ("projeto.pdf", make_pdf(), "application/pdf")},
+    )
+    assert response.status_code == 400
+    assert "legislação local é obrigatória" in response.json()["detail"]
+
+
+def test_other_municipality_accepts_local_regulation() -> None:
+    response = client.post(
+        "/api/analyses",
+        data={"project_name": "Casa", "municipality": "Osasco - SP"},
+        files=[
+            ("project_pdf", ("projeto.pdf", make_pdf(), "application/pdf")),
+            ("regulation_pdf", ("legislacao-local.pdf", make_pdf(), "application/pdf")),
+        ],
+    )
+    assert response.status_code == 201
+    assert len(response.json()["documents"]) == 2
+
+
 def test_production_frontend_is_served_by_backend() -> None:
     response = client.get("/")
     assert response.status_code == 200

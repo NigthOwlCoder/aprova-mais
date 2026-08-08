@@ -36,6 +36,8 @@ export default function App() {
   const [estimatedSeconds, setEstimatedSeconds] = useState(60);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [reportOrigin, setReportOrigin] = useState<"demo" | "upload">("demo");
+  const [municipalityChoice, setMunicipalityChoice] = useState<"barueri" | "other">("barueri");
+  const [otherMunicipality, setOtherMunicipality] = useState("");
 
   useEffect(() => {
     if (view !== "processing") return;
@@ -69,6 +71,9 @@ export default function App() {
   async function submitAnalysis(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
+    for (const [key, value] of Array.from(formData.entries())) {
+      if (value instanceof File && value.size === 0 && !value.name) formData.delete(key);
+    }
     const files = Array.from(formData.values()).filter((value): value is File => value instanceof File && value.size > 0);
     const totalMegabytes = files.reduce((total, file) => total + file.size, 0) / (1024 * 1024);
     setEstimatedSeconds(Math.min(180, Math.max(60, Math.round(45 + files.length * 12 + totalMegabytes * 2))));
@@ -85,18 +90,27 @@ export default function App() {
 
     try {
       const demonstration = await loadDemoWithRetry();
+      const municipality = String(formData.get("municipality") || demonstration.project.municipality);
       setAnalysis({
         ...demonstration,
         id: receipt.id,
         project: {
           ...demonstration.project,
           name: String(formData.get("project_name") || demonstration.project.name),
-          municipality: String(formData.get("municipality") || demonstration.project.municipality),
+          municipality,
           project_type: String(formData.get("project_type") || demonstration.project.project_type),
           address: String(formData.get("address") || "Endereço não informado"),
           lot_area: Number(formData.get("lot_area")) || demonstration.project.lot_area,
           zoning: String(formData.get("zoning") || "Não informado"),
         },
+        legislation_basis: municipality === "Barueri - SP"
+          ? demonstration.legislation_basis
+          : {
+              title: "Legislação local enviada pelo usuário",
+              version: "Arquivo fornecido nesta análise",
+              source: "#",
+              registered_at: new Date().toLocaleDateString("pt-BR"),
+            },
       });
       setReportOrigin("upload");
       setActiveStep(4);
@@ -177,7 +191,9 @@ export default function App() {
             <p className="required-legend"><span>*</span> Campos obrigatórios</p>
             <div className="form-grid">
               <label>Nome do projeto <span className="required-mark" aria-hidden="true">*</span><input name="project_name" required placeholder="Ex.: Residência Alameda" /></label>
-              <label>Município atendido <span className="required-mark" aria-hidden="true">*</span><select name="municipality" required defaultValue="Barueri - SP"><option>Barueri - SP</option></select></label>
+              <label>Município atendido <span className="required-mark" aria-hidden="true">*</span><select required value={municipalityChoice} onChange={(event) => setMunicipalityChoice(event.target.value as "barueri" | "other")}><option value="barueri">Barueri - SP</option><option value="other">Outro município</option></select></label>
+              {municipalityChoice === "other" && <label>Qual município? <span className="required-mark" aria-hidden="true">*</span><input name="municipality" required value={otherMunicipality} onChange={(event) => setOtherMunicipality(event.target.value)} placeholder="Ex.: Osasco - SP" /></label>}
+              {municipalityChoice === "barueri" && <input type="hidden" name="municipality" value="Barueri - SP" />}
               <label>Tipo de projeto<select name="project_type" defaultValue="Residencial unifamiliar"><option>Residencial unifamiliar</option><option>Residencial multifamiliar</option><option>Comercial</option><option>Institucional</option></select></label>
               <label>Zoneamento<input name="zoning" placeholder="Quando conhecido" /></label>
               <label className="wide">Endereço<input name="address" placeholder="Logradouro, número e bairro" /></label>
@@ -186,7 +202,9 @@ export default function App() {
             <div className="document-help"><strong>Documentos do processo</strong><span>Selecione todas as pranchas, levantamentos, RRTs e demais PDFs que serão protocolados.</span></div>
             <div className="uploads">
               <MultiFileField name="project_pdf" title="Documentos do projeto" required />
-              <FileField name="regulation_pdf" title="Legislação complementar" />
+              {municipalityChoice === "barueri"
+                ? <div className="municipal-basis"><span>✓</span><div><strong>Base municipal de Barueri incluída</strong><small>Código de Edificações — alteração LC nº 349/2015 · base cadastrada em 08/08/2026</small></div></div>
+                : <FileField name="regulation_pdf" title="Legislação local" required />}
               <FileField name="condominium_pdf" title="Regulamento do condomínio" />
               <FileField name="descriptive_memorial_pdf" title="Memorial descritivo" />
             </div>
@@ -269,6 +287,7 @@ function Result({ analysis, origin, onRestart }: { analysis: DemoAnalysis; origi
   return <main className="result-page">
     <div className="result-title"><div><span className="eyebrow">Relatório preliminar</span><h1>{analysis.project.name}</h1><p>{analysis.project.address} · {analysis.project.project_type}</p></div><button className="secondary" onClick={onRestart}>Nova análise</button></div>
     {origin === "upload" && <aside className="report-mode"><strong>Documentos recebidos com sucesso</strong><p>Esta versão ainda não executa a conferência técnica dos arquivos enviados. O relatório abaixo demonstra o formato final e as marcações que serão geradas quando o motor de análise estiver concluído.</p></aside>}
+    {analysis.legislation_basis && <section className="legislation-basis"><span>Base legal utilizada</span><strong>{analysis.legislation_basis.title}</strong><p>{analysis.legislation_basis.version} · cadastrada em {analysis.legislation_basis.registered_at}</p>{analysis.legislation_basis.source !== "#" && <a href={analysis.legislation_basis.source} target="_blank" rel="noreferrer">Consultar fonte oficial</a>}</section>}
     <section className="score-panel">
       <div className="score-ring" style={{ "--score": `${s.score * 3.6}deg` } as React.CSSProperties}><div><strong>{s.score}</strong><small>/100</small></div></div>
       <div className="score-copy"><span>Índice preliminar de conformidade</span><h2>Revisão recomendada antes do protocolo</h2><p>A análise encontrou pontos que merecem ajuste e validação da equipe responsável.</p><div className="confidence"><span><i style={{ width: `${s.confidence}%` }} /></span>Confiança da análise automática: <strong>{s.confidence}%</strong></div></div>

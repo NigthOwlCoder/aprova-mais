@@ -22,10 +22,21 @@ async def create_analysis(
     lot_area: Annotated[float | None, Form(gt=0)] = None,
     zoning: Annotated[str | None, Form()] = None,
     project_pdf: list[UploadFile] = File(...),
-    regulation_pdf: UploadFile | None = File(None),
-    condominium_pdf: UploadFile | None = File(None),
-    descriptive_memorial_pdf: UploadFile | None = File(None),
+    regulation_pdf: UploadFile | str | None = File(None),
+    condominium_pdf: UploadFile | str | None = File(None),
+    descriptive_memorial_pdf: UploadFile | str | None = File(None),
 ) -> AnalysisReceipt:
+    regulation_upload = None if isinstance(regulation_pdf, str) else regulation_pdf
+    condominium_upload = None if isinstance(condominium_pdf, str) else condominium_pdf
+    memorial_upload = None if isinstance(descriptive_memorial_pdf, str) else descriptive_memorial_pdf
+    is_barueri = municipality.strip().casefold() in {"barueri", "barueri - sp"}
+    has_local_regulation = bool(regulation_upload and regulation_upload.filename)
+    if not is_barueri and not has_local_regulation:
+        raise HTTPException(
+            status_code=400,
+            detail="A legislação local é obrigatória para outros municípios.",
+        )
+
     metadata = ProjectMetadata(
         name=project_name,
         municipality=municipality,
@@ -38,9 +49,9 @@ async def create_analysis(
         metadata=metadata,
         files={
             "project": project_pdf,
-            "regulation": regulation_pdf,
-            "condominium": condominium_pdf,
-            "descriptive_memorial": descriptive_memorial_pdf,
+            "regulation": regulation_upload,
+            "condominium": condominium_upload,
+            "descriptive_memorial": memorial_upload,
         },
     )
     return AnalysisReceipt.model_validate(analysis.model_dump())

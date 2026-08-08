@@ -4,7 +4,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from uuid import UUID, uuid4
 
-from fastapi import UploadFile
+from fastapi import HTTPException, UploadFile
 
 from app.models.analysis import AnalysisResponse, AnalysisStatus
 from app.models.project import ProjectMetadata, StoredDocument
@@ -40,6 +40,9 @@ class AnalysisService:
                     continue
                 upload_list = uploads if isinstance(uploads, list) else [uploads]
                 for upload in upload_list:
+                    if not upload.filename:
+                        await upload.close()
+                        continue
                     path, size = await self.files.save_pdf(upload, destination)
                     text, page_count = self.pdf.extract_text(path)
                     documents.append(
@@ -53,6 +56,12 @@ class AnalysisService:
                             extracted_text=text,
                         )
                     )
+
+            if not any(document.document_type == "project" for document in documents):
+                raise HTTPException(
+                    status_code=400,
+                    detail="Selecione pelo menos um documento do projeto.",
+                )
         finally:
             # The original PDFs are removed even when one document cannot be read.
             shutil.rmtree(destination, ignore_errors=True)
