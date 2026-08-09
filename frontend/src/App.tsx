@@ -160,20 +160,31 @@ export default function App() {
             </div>
           </section>
           <section className="how-section" id="como-funciona">
-            <div className="section-intro"><span>Como funciona</span><h2>Da planta ao protocolo, com mais segurança.</h2></div>
-            <div className="process-flow">
-              <article><span>01</span><h3>Envie os documentos</h3><p>Projeto, legislação e regulamentos em PDF.</p></article>
-              <article><span>02</span><h3>Compare parâmetros</h3><p>Medidas e regras reunidas com suas fontes.</p></article>
-              <article><span>03</span><h3>Revise o relatório</h3><p>Pendências priorizadas para apoiar sua equipe.</p></article>
+            <div className="section-intro"><span>Como funciona</span><h2>Do primeiro envio à aprovação do projeto.</h2></div>
+            <div className="workflow-phase">
+              <div className="phase-label"><b>Antes do protocolo</b><span>Prepare um conjunto documental consistente</span></div>
+              <div className="process-flow">
+                <article><span>01</span><h3>Organize a versão</h3><p>Envie plantas e documentos com o nome completo de cada arquivo.</p></article>
+                <article><span>02</span><h3>Confira a completude</h3><p>Identifique arquivos ausentes, repetidos, ilegíveis ou mantidos da versão anterior.</p></article>
+                <article><span>03</span><h3>Revise as pendências</h3><p>Receba as não conformidades primeiro, com fontes e recomendações.</p></article>
+              </div>
+            </div>
+            <div className="workflow-phase return-phase">
+              <div className="phase-label"><b>Se a Prefeitura solicitar correções</b><span>Transforme o retorno em um plano de revisão</span></div>
+              <div className="process-flow">
+                <article><span>04</span><h3>Envie o retorno</h3><p>Adicione o PDF ou fotografe as folhas físicas recebidas da Prefeitura.</p></article>
+                <article><span>05</span><h3>Organize o checklist</h3><p>As marcações são reunidas por prancha, página e arquivo de origem.</p></article>
+                <article><span>06</span><h3>Valide as correções</h3><p>Compare a nova versão e confirme o atendimento de cada exigência.</p></article>
+              </div>
             </div>
           </section>
           <section className="resources-section" id="recursos">
-            <div className="section-intro"><span>Recursos para arquitetos</span><h2>Uma conferência técnica completa antes do protocolo.</h2></div>
+            <div className="section-intro"><span>Recursos para arquitetos</span><h2>Controle técnico e histórico em cada revisão.</h2></div>
             <div className="how-it-works">
-              <article><span className="card-icon">📄</span><small>01</small><h3>Projeto</h3><p>Faça upload do projeto arquitetônico.</p></article>
-              <article><span className="card-icon">🏛️</span><small>02</small><h3>Legislação de Barueri</h3><p>Confira o projeto com base na legislação municipal de Barueri — SP.</p></article>
-              <article><span className="card-icon">📋</span><small>03</small><h3>Conferência Técnica</h3><p>Confira automaticamente os pontos que precisam de revisão antes do protocolo.</p></article>
-              <article><span className="card-icon">✅</span><small>04</small><h3>Relatório Técnico</h3><p>Receba um checklist completo com recomendações para revisão.</p></article>
+              <article><span className="card-icon" aria-hidden="true">V</span><small>01</small><h3>Versões organizadas</h3><p>Saiba quais arquivos são novos, substituídos ou mantidos da revisão anterior.</p></article>
+              <article><span className="card-icon" aria-hidden="true">✓</span><small>02</small><h3>Screening de completude</h3><p>Confirme a composição documental antes de iniciar a conferência técnica.</p></article>
+              <article><span className="card-icon" aria-hidden="true">§</span><small>03</small><h3>Base normativa</h3><p>Consulte a legislação utilizada e as possíveis divergências entre regras.</p></article>
+              <article><span className="card-icon" aria-hidden="true">↺</span><small>04</small><h3>Histórico de correções</h3><p>Acompanhe exigências da Prefeitura e valide o que mudou em cada arquivo.</p></article>
             </div>
           </section>
           <section className="plans-cta" id="planos">

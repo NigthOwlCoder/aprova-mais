@@ -47,3 +47,15 @@ button { cursor: pointer; }
 footer{display:flex;align-items:center;justify-content:space-between;gap:20px;text-align:left;padding:25px clamp(24px,6vw,96px)}footer nav{display:flex;gap:20px}footer a{text-decoration:none}
 @media(max-width:900px){.plan-review-grid{grid-template-columns:1fr}.annotated-plan{border-right:0;border-bottom:1px solid #e1e7e3}}
 @media(max-width:650px){.annotated-plan{min-height:330px}.section-title{align-items:flex-start;gap:12px;flex-direction:column}footer{align-items:flex-start;flex-direction:column}}
+
+/* Project lifecycle */
+.workflow-phase{max-width:1200px;margin:0 auto}
+.workflow-phase+.workflow-phase{margin-top:22px}
+.phase-label{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:0 4px 12px}
+.phase-label b{font:600 14px Manrope;color:#25483d}
+.phase-label span{color:#71807a;font-size:12px}
+.return-phase .phase-label b{color:#527b2c}
+.return-phase .process-flow{border-color:#d2dfca;background:#d2dfca}
+.return-phase .process-flow article{background:#f9fbf7}
+.how-it-works .card-icon{color:var(--green);font:700 17px Manrope}
+@media(max-width:650px){.phase-label{align-items:flex-start;flex-direction:column;gap:4px}}
