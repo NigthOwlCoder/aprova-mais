@@ -1,2 +1,1 @@
-"""Aprova+ backend package."""
-
+"""Projeta+ backend package."""

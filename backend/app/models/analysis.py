@@ -7,9 +7,9 @@ from app.models.project import ProjectMetadata, StoredDocument
 
 
 DISCLAIMER = (
-    "Esta análise é preliminar e tem caráter informativo. O resultado não substitui "
-    "a avaliação de um arquiteto, engenheiro, responsável técnico, condomínio ou "
-    "órgão público competente."
+    "Ferramenta privada e independente. O resultado é preliminar, não constitui "
+    "aprovação, laudo ou parecer técnico e não substitui a avaliação do responsável "
+    "técnico nem a decisão do órgão competente."
 )
 
 
@@ -23,6 +23,9 @@ class AnalysisResponse(BaseModel):
     created_at: datetime
     project: ProjectMetadata
     documents: list[StoredDocument]
+    accepted_terms_at: datetime | None = None
+    terms_version: str | None = None
+    privacy_version: str | None = None
     disclaimer: str = DISCLAIMER
 
 

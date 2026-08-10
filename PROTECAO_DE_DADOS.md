@@ -1,10 +1,10 @@
-# Regra de Proteção de Dados do Aprova+
+# Regra de Proteção de Dados do Projeta+
 
 Versão: 1.0 — 8 de agosto de 2026
 
 ## Regra principal
 
-Nenhum projeto, documento, conteúdo extraído, resultado ou correção enviado ao Aprova+ será utilizado para treinamento, ajuste ou avaliação de modelos sem autorização voluntária, específica e registrada para aquele projeto.
+Nenhum projeto, documento, conteúdo extraído, resultado ou correção enviado ao Projeta+ será utilizado para treinamento, ajuste ou avaliação de modelos sem autorização voluntária, específica e registrada para aquele projeto.
 
 A recusa não reduz a qualidade da conferência nem impede o uso do serviço gratuito durante a fase de testes.
 

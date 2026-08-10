@@ -1,0 +1,34 @@
+{
+  "schema_version": "1.0",
+  "municipality": {"id": "campinas-sp", "name": "Campinas - SP", "ibge_code": "3509502"},
+  "status": "pilot",
+  "registered_at": "2026-08-09",
+  "automatic_regulation": true,
+  "requires_lot_context": ["endereço ou código cartográfico", "ficha informativa válida", "zoneamento", "incidência na APA de Campinas", "restrições específicas do imóvel"],
+  "official_services": {
+    "aprova_facil": "https://aprova-facil.campinas.sp.gov.br/",
+    "legal_library": "https://bibliotecajuridica.campinas.sp.gov.br/",
+    "project_models": "https://portal-adm.campinas.sp.gov.br/servico/consultar-cartilha-e-modelos-para-aprovacao-de-projetos"
+  },
+  "report_basis": {
+    "title": "Base municipal de Campinas",
+    "version": "LC 9/2003, LC 189/2018, LC 208/2018, LC 295/2020, Decreto 23.443/2024 atualizado pelo Decreto 24.118/2025, LC 560/2025 e Resolução 1/2019-Seplurb; textos consolidados consultados em 09/08/2026",
+    "source": "https://portal-adm.campinas.sp.gov.br/servico/consultar-cartilha-e-modelos-para-aprovacao-de-projetos",
+    "registered_at": "09/08/2026",
+    "disclaimer": "A Biblioteca Jurídica informa que seus textos não substituem a publicação no Diário Oficial. Os parâmetros dependem da ficha informativa, do zoneamento, da tipologia e da eventual incidência da APA."
+  },
+  "sources": [
+    {"id": "CAM-COE-009", "role": "normative_consolidated_online", "title": "Lei Complementar nº 9/2003 - Código de Projetos e Execução de Obras e Edificações", "source_url": "https://bibliotecajuridica.campinas.sp.gov.br/index/visualizaratualizada/id/90884", "verified_at": "2026-08-09"},
+    {"id": "CAM-PDE-189", "role": "normative_consolidated_online", "title": "Lei Complementar nº 189/2018 - Plano Diretor Estratégico", "source_url": "https://bibliotecajuridica.campinas.sp.gov.br/index/visualizaratualizada/id/132100", "verified_at": "2026-08-09"},
+    {"id": "CAM-LUOS-208", "role": "normative_consolidated_online", "title": "Lei Complementar nº 208/2018 - Parcelamento, Ocupação e Uso do Solo", "source_url": "https://bibliotecajuridica.campinas.sp.gov.br/index/visualizaratualizada/id/133605", "verified_at": "2026-08-09"},
+    {"id": "CAM-APA-295", "role": "normative_consolidated_online", "title": "Lei Complementar nº 295/2020 - Parcelamento, Ocupação e Uso do Solo na APA de Campinas", "source_url": "https://bibliotecajuridica.campinas.sp.gov.br/index/visualizaratualizada/id/136489", "verified_at": "2026-08-09"},
+    {"id": "CAM-DEC-23443", "role": "normative_consolidated_online", "title": "Decreto nº 23.443/2024 - Projetos simplificados", "updated_through": "Decreto nº 24.118, de 17 de outubro de 2025", "source_url": "https://bibliotecajuridica.campinas.sp.gov.br/index/visualizaratualizada/id/142487", "verified_at": "2026-08-09"},
+    {"id": "CAM-LC-560", "role": "normative_original_online", "title": "Lei Complementar nº 560/2025 - EIV/RIV", "source_url": "https://bibliotecajuridica.campinas.sp.gov.br/index/visualizaroriginal/id/145056", "verified_at": "2026-08-09"},
+    {"id": "CAM-LC-561", "role": "conditional_normative_online", "title": "Lei Complementar nº 561/2025 - Alvará de Execução Autodeclaratório", "source_url": "https://bibliotecajuridica.campinas.sp.gov.br/index/visualizaratualizada/id/145082", "verified_at": "2026-08-09", "caution": "Aplicar somente quando a modalidade e os critérios de enquadramento forem confirmados."},
+    {"id": "CAM-RES-001-2019", "role": "normative_original_online", "title": "Resolução nº 1/2019-Seplurb - mecanismos alternativos de permeabilidade", "source_url": "https://bibliotecajuridica.campinas.sp.gov.br/index/visualizaroriginal/id/134803", "verified_at": "2026-08-09"},
+    {"id": "CAM-CARTILHA-HU-R7", "role": "technical_guidance", "title": "Cartilha de Aprovação para Habitação Unifamiliar - revisão 7", "date": "2024-09-06", "local_file": "cartilha-aprovacao-revisao-7.pdf", "pages": 15, "sha256": "0242C2ABB20AEAE78362AD15D6A1E79D136DACCD94E5D08FE0E2969DE99B4208", "source_url": "https://portal-adm.campinas.sp.gov.br/sites/default/files/servicos/CARTILHA%20REVIS%C3%83O%207%20COM%20CAPA%202.pdf", "verified_at": "2026-08-09", "caution": "Material orientativo; a própria cartilha declara que não substitui a leitura e aplicação completa da lei."},
+    {"id": "CAM-ROTEIRO-HU-R02", "role": "official_analysis_checklist", "title": "Roteiro de análise - tipologia HU - R02", "local_file": "roteiro-analise-hu-r02.pdf", "pages": 6, "sha256": "4A80AFDD22CF56EC834A3DA8EA3336D5A98DC1408493F9833E2012A5F863F9C0", "source_url": "https://portal-adm.campinas.sp.gov.br/sites/default/files/servicos/Roteiro_Padroniza%C3%A7%C3%A3o%20HU_R02.pdf", "verified_at": "2026-08-09", "caution": "Usar como roteiro de conferência, confirmando cada item na norma vigente citada."},
+    {"id": "CAM-APROVA-FACIL-MANUAL-2024", "role": "procedural_reference", "title": "Manual dos usuários - Aprova Fácil", "date": "2024-04", "local_file": "manual-usuario-aprova-facil-04-2024.pdf", "pages": 43, "sha256": "4EE86814C5B3B11D97C2DC082A3F0428D0D0A20495053B5C39E2432F2856E88C", "source_url": "https://portal-adm.campinas.sp.gov.br/sites/default/files/secretarias/arquivos-avulsos/3628/2024/04/02-144603/Manual-usuario-Aprova-Facil-04-2024.pdf", "verified_at": "2026-08-09"}
+  ],
+  "excluded_from_automatic_basis": ["normas ABNT protegidas por direitos autorais", "regulamentos privados de loteamento ou condomínio", "documentos particulares enviados por usuários"]
+}
