@@ -1,4 +1,4 @@
-# Aprova+
+# Projeta+
 
 MVP para análise preliminar de conformidade de projetos arquitetônicos.
 
@@ -41,7 +41,7 @@ Nenhum arquivo é usado para treinamento sem autorização voluntária, específ
 
 ## Publicação no Render
 
-O arquivo `render.yaml` configura o Aprova+ como um único Web Service. O Render instala o backend, compila o frontend e disponibiliza ambos no mesmo endereço público.
+O arquivo `render.yaml` configura o Projeta+ como um único Web Service. O Render instala o backend, compila o frontend e disponibiliza ambos no mesmo endereço público.
 
 1. Envie esta pasta para um repositório no GitHub.
 2. No Render, selecione **New > Blueprint**.

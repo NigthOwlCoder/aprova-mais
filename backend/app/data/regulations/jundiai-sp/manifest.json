@@ -1,0 +1,52 @@
+{
+  "schema_version": "1.0",
+  "municipality": {"id": "jundiai-sp", "name": "Jundiaí - SP", "ibge_code": "3525904"},
+  "status": "pilot",
+  "registered_at": "2026-08-09",
+  "automatic_regulation": true,
+  "requires_lot_context": ["endereço ou inscrição imobiliária", "zoneamento", "classificação viária"],
+  "official_services": {
+    "saepro": "https://saepro.jundiai.sp.gov.br/",
+    "urban_laws": "https://jundiai.sp.gov.br/planejamento-e-meio-ambiente/legislacao/leis-urbanisticas/",
+    "code_and_procedures": "https://jundiai.sp.gov.br/planejamento-e-meio-ambiente/obras-particulares/legislacao/"
+  },
+  "report_basis": {
+    "title": "Base municipal de Jundiaí",
+    "version": "Código de Obras LC 606/2021 consolidado até a LC 627/2023; Plano Diretor Lei 9.321/2019 consolidado até a Lei 10.177/2024",
+    "source": "https://jundiai.sp.gov.br/planejamento-e-meio-ambiente/obras-particulares/legislacao/",
+    "registered_at": "09/08/2026",
+    "disclaimer": "As compilações facilitam a consulta e não substituem os textos publicados na Imprensa Oficial. Parâmetros urbanísticos dependem do lote, do zoneamento e da classificação viária."
+  },
+  "sources": [
+    {
+      "id": "JDI-COE-606", "role": "normative_compilation",
+      "title": "Lei Complementar nº 606/2021 — Código de Obras e Edificações",
+      "consolidated_through": "Lei Complementar nº 627, de 7 de dezembro de 2023",
+      "local_file": "lc-606-2021-codigo-obras-consolidado-ate-lc-627-2023.pdf", "pages": 92,
+      "sha256": "E50A793AA1498ADF67BE2119EEFB3BD017B3AD3C48A9027D26E52DFB5A3BF8EB",
+      "source_url": "https://jundiai.sp.gov.br/planejamento-e-meio-ambiente/wp-content/uploads/sites/15/2024/02/lei_complementar_606_2021_consolidacao.pdf", "verified_at": "2026-08-09"
+    },
+    {
+      "id": "JDI-COE-606-ANEXOS", "role": "normative_annex", "title": "Anexos do Código de Obras e Edificações",
+      "local_file": "lc-606-2021-anexos-codigo-obras.pdf", "pages": 21,
+      "sha256": "B9193BC078999186B44DC43F9B52ABADC625E40E9B1412DBB3180C26F70C9729",
+      "source_url": "https://jundiai.sp.gov.br/planejamento-e-meio-ambiente/wp-content/uploads/sites/15/2021/07/anexos-codigo-de-obras.pdf", "verified_at": "2026-08-09"
+    },
+    {
+      "id": "JDI-PD-9321", "role": "normative_compilation",
+      "title": "Lei nº 9.321/2019 — Plano Diretor do Município de Jundiaí",
+      "consolidated_through": "Lei nº 10.177, de 13 de junho de 2024",
+      "local_file": "lei-9321-2019-plano-diretor-consolidado-junho-2024.pdf", "pages": 244,
+      "sha256": "F3B02E1A5CE653A2E7F4B7A8A7E5D3868CEF84172692C16452CA3E51764EAD75",
+      "source_url": "https://jundiai.sp.gov.br/planejamento-e-meio-ambiente/wp-content/uploads/sites/15/2024/07/lei-9321-2019_consolidacao-junho2024.pdf", "verified_at": "2026-08-09"
+    },
+    {
+      "id": "JDI-DAP-2017", "role": "procedural_reference", "title": "Itens analisados em processos — DAP", "date": "2017-12-19",
+      "local_file": "itens-analisados-dap.pdf", "pages": 4,
+      "sha256": "D6C8A1B9BB91F194531149EA0687852534E18887363BECA1303C9F5037894BA5",
+      "source_url": "https://jundiai.sp.gov.br/planejamento-e-meio-ambiente/wp-content/uploads/sites/15/2017/03/itens-de-analise-processos-ugpuma-dap.pdf", "verified_at": "2026-08-09",
+      "caution": "Documento antigo, usado somente como referência de procedimento. Confirmar exigências atuais no SAEPRO e na legislação vigente."
+    }
+  ],
+  "excluded_from_automatic_basis": ["normas ABNT protegidas por direitos autorais", "regulamentos privados de condomínio ou loteamento", "documentos particulares enviados por usuários"]
+}

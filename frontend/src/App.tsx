@@ -5,17 +5,17 @@ import type { DemoAnalysis, ItemStatus } from "./types/analysis";
 type View = "home" | "form" | "processing" | "result";
 
 const statusLabel: Record<ItemStatus, string> = {
-  COMPLIANT: "Conforme",
-  WARNING: "Alerta",
-  NON_COMPLIANT: "Não conforme",
-  NOT_IDENTIFIED: "Não identificado",
+  COMPLIANT: "Critério aparentemente atendido",
+  WARNING: "Requer revisão",
+  NON_COMPLIANT: "Requer revisão",
+  NOT_IDENTIFIED: "Não foi possível verificar",
 };
 
 const processingSteps = [
   "Lendo documentos",
-  "Identificando legislação",
+  "Consultando as regras cadastradas na plataforma",
   "Extraindo parâmetros do projeto",
-  "Comparando projeto e regras",
+  "Preparando relatório demonstrativo",
   "Gerando relatório",
 ];
 
@@ -36,8 +36,12 @@ export default function App() {
   const [estimatedSeconds, setEstimatedSeconds] = useState(60);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [reportOrigin, setReportOrigin] = useState<"demo" | "upload">("demo");
-  const [municipalityChoice, setMunicipalityChoice] = useState<"barueri" | "other">("barueri");
+  const [municipalityChoice, setMunicipalityChoice] = useState<"barueri" | "jundiai" | "campinas" | "other">("barueri");
   const [otherMunicipality, setOtherMunicipality] = useState("");
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0 });
+  }, [view]);
 
   useEffect(() => {
     if (view !== "processing") return;
@@ -105,7 +109,21 @@ export default function App() {
         },
         legislation_basis: municipality === "Barueri - SP"
           ? demonstration.legislation_basis
-          : {
+          : municipality === "Jundiaí - SP"
+            ? {
+                title: "Base municipal de Jundiaí",
+                version: "Código de Obras LC 606/2021 consolidado até a LC 627/2023; Plano Diretor Lei 9.321/2019 consolidado até a Lei 10.177/2024",
+                source: "https://jundiai.sp.gov.br/planejamento-e-meio-ambiente/obras-particulares/legislacao/",
+                registered_at: "09/08/2026",
+              }
+            : municipality === "Campinas - SP"
+              ? {
+                  title: "Base municipal de Campinas",
+                  version: "LC 9/2003, LC 189/2018, LC 208/2018, LC 295/2020, Decreto 23.443/2024 atualizado pelo Decreto 24.118/2025, LC 560/2025 e Resolução 1/2019-Seplurb",
+                  source: "https://portal-adm.campinas.sp.gov.br/servico/consultar-cartilha-e-modelos-para-aprovacao-de-projetos",
+                  registered_at: "09/08/2026",
+                }
+              : {
               title: "Legislação local enviada pelo usuário",
               version: "Arquivo fornecido nesta análise",
               source: "#",
@@ -125,7 +143,7 @@ export default function App() {
     <div className="app-shell">
       <header className="topbar">
         <button className="brand" onClick={() => setView("home")} aria-label="Voltar ao início">
-          <span className="brand-mark">A+</span><span>Aprova<strong>+</strong></span>
+          <span className="brand-mark">P+</span><span>Projeta<strong>+</strong></span>
         </button>
         {view === "home" && <>
           <nav className="main-nav" aria-label="Navegação principal">
@@ -142,10 +160,14 @@ export default function App() {
         <main>
           <section className="hero" aria-labelledby="hero-title">
             <div className="hero-copy">
-              <div className="eyebrow">Menos retrabalho. Mais aprovações.</div>
-              <div className="availability">Disponível inicialmente para Barueri — SP</div>
-              <h1 id="hero-title"><span>Aprove</span> seu projeto arquitetônico na Prefeitura <span>mais</span> rápido</h1>
-              <p>Confira se seu projeto está pronto para aprovação na Prefeitura.</p>
+              <div className="eyebrow">Menos retrabalho. Mais clareza antes do protocolo.</div>
+              <div className="availability">Bases municipais cadastradas: Barueri, Jundiaí e Campinas — SP</div>
+              <h1 id="hero-title"><span>Prepare</span> seu projeto para aprovação na Prefeitura</h1>
+              <p>Evite retrabalho. Faça uma conferência preliminar dos documentos e requisitos antes do protocolo.</p>
+              <div className="legal-notices">
+                <p><strong>Ferramenta independente de apoio à revisão.</strong> Não possui vínculo com prefeituras, condomínios ou órgãos públicos. O resultado é preliminar, não constitui aprovação, laudo ou parecer técnico e não substitui a avaliação do responsável técnico nem a decisão do órgão competente.</p>
+                <p><strong>Versão demonstrativa:</strong> os documentos enviados ainda não são submetidos a uma conferência técnica completa. O relatório apresentado demonstra o formato previsto para o serviço.</p>
+              </div>
               <div className="hero-actions">
                 <button className="primary" onClick={() => setView("form")}>Nova Análise <span>→</span></button>
                 <button className="secondary" onClick={() => openDemo()}>Carregar Demonstração</button>
@@ -153,20 +175,20 @@ export default function App() {
               {error && <p className="error" role="alert">{error}</p>}
             </div>
             <div className="hero-visual" aria-hidden="true"><img src="/aprova-plus-hero.png" alt="" /></div>
-            <div className="trust-row" aria-label="Indicadores de confiança">
+            <div className="trust-row" aria-label="Características do serviço">
               <span>✓ Análise baseada na legislação</span>
               <span>✓ Relatórios técnicos</span>
               <span>✓ Revisão humana recomendada</span>
             </div>
           </section>
           <section className="how-section" id="como-funciona">
-            <div className="section-intro"><span>Como funciona</span><h2>Do primeiro envio à aprovação do projeto.</h2></div>
+            <div className="section-intro"><span>Como funciona</span><h2>Do envio dos documentos à organização das revisões.</h2></div>
             <div className="workflow-phase">
               <div className="phase-label"><b>Antes do protocolo</b><span>Prepare um conjunto documental consistente</span></div>
               <div className="process-flow">
                 <article><span>01</span><h3>Organize a versão</h3><p>Envie plantas e documentos com o nome completo de cada arquivo.</p></article>
                 <article><span>02</span><h3>Confira a completude</h3><p>Identifique arquivos ausentes, repetidos, ilegíveis ou mantidos da versão anterior.</p></article>
-                <article><span>03</span><h3>Revise as pendências</h3><p>Receba as não conformidades primeiro, com fontes e recomendações.</p></article>
+                <article><span>03</span><h3>Revise as pendências</h3><p>Receba primeiro os pontos que requerem revisão, com fontes e recomendações.</p></article>
               </div>
             </div>
             <div className="workflow-phase return-phase">
@@ -174,7 +196,7 @@ export default function App() {
               <div className="process-flow">
                 <article><span>04</span><h3>Envie o retorno</h3><p>Adicione o PDF ou fotografe as folhas físicas recebidas da Prefeitura.</p></article>
                 <article><span>05</span><h3>Organize o checklist</h3><p>As marcações são reunidas por prancha, página e arquivo de origem.</p></article>
-                <article><span>06</span><h3>Valide as correções</h3><p>Compare a nova versão e confirme o atendimento de cada exigência.</p></article>
+                <article><span>06</span><h3>Confira as correções realizadas</h3><p>Compare a nova versão e confira o tratamento dado a cada exigência.</p></article>
               </div>
             </div>
           </section>
@@ -184,11 +206,11 @@ export default function App() {
               <article><span className="card-icon" aria-hidden="true">V</span><small>01</small><h3>Versões organizadas</h3><p>Saiba quais arquivos são novos, substituídos ou mantidos da revisão anterior.</p></article>
               <article><span className="card-icon" aria-hidden="true">✓</span><small>02</small><h3>Screening de completude</h3><p>Confirme a composição documental antes de iniciar a conferência técnica.</p></article>
               <article><span className="card-icon" aria-hidden="true">§</span><small>03</small><h3>Base normativa</h3><p>Consulte a legislação utilizada e as possíveis divergências entre regras.</p></article>
-              <article><span className="card-icon" aria-hidden="true">↺</span><small>04</small><h3>Histórico de correções</h3><p>Acompanhe exigências da Prefeitura e valide o que mudou em cada arquivo.</p></article>
+              <article><span className="card-icon" aria-hidden="true">↺</span><small>04</small><h3>Histórico de correções</h3><p>Acompanhe exigências da Prefeitura e confira o que mudou em cada arquivo.</p></article>
             </div>
           </section>
           <section className="plans-cta" id="planos">
-            <div><span>Acesso gratuito na fase de testes</span><h2>Revise com mais segurança. Protocole com mais confiança.</h2><p>Todos os recursos estão gratuitos. Planos pagos serão apresentados somente quando a conferência estiver tecnicamente validada.</p></div>
+            <div><span>Acesso gratuito na fase de testes</span><h2>Revise com mais segurança. Organize melhor o protocolo.</h2><p>Todos os recursos estão gratuitos. Planos pagos serão apresentados somente quando a conferência estiver tecnicamente implementada e testada.</p></div>
             <button className="primary" onClick={() => setView("form")}>Nova Análise <span>→</span></button>
           </section>
         </main>
@@ -198,13 +220,20 @@ export default function App() {
         <main className="page narrow">
           <button className="back" onClick={() => setView("home")}>← Voltar</button>
           <div className="page-heading"><span>Nova análise</span><h1>Conte-nos sobre o projeto</h1><p>Envie o conjunto de PDFs que compõe o processo. É necessário selecionar pelo menos um documento.</p></div>
+          <div className="pre-upload-notices" role="note">
+            <p><strong>Ferramenta independente de apoio à revisão.</strong> Não possui vínculo com prefeituras, condomínios ou órgãos públicos. O resultado é preliminar, não constitui aprovação, laudo ou parecer técnico e não substitui a avaliação do responsável técnico nem a decisão do órgão competente.</p>
+            <p><strong>Versão demonstrativa:</strong> os documentos enviados ainda não são submetidos a uma conferência técnica completa. O relatório apresentado demonstra o formato previsto para o serviço.</p>
+          </div>
           <form className="analysis-form" onSubmit={submitAnalysis}>
             <p className="required-legend"><span>*</span> Campos obrigatórios</p>
             <div className="form-grid">
+              <label className="wide">Seu e-mail <span className="required-mark" aria-hidden="true">*</span><input name="contact_email" type="email" required autoComplete="email" placeholder="voce@exemplo.com" /><small>Na Fase 1, este é o único dado solicitado para seu cadastro.</small></label>
               <label>Nome do projeto <span className="required-mark" aria-hidden="true">*</span><input name="project_name" required placeholder="Ex.: Residência Alameda" /></label>
-              <label>Município atendido <span className="required-mark" aria-hidden="true">*</span><select required value={municipalityChoice} onChange={(event) => setMunicipalityChoice(event.target.value as "barueri" | "other")}><option value="barueri">Barueri - SP</option><option value="other">Outro município</option></select></label>
+              <label>Município atendido <span className="required-mark" aria-hidden="true">*</span><select required value={municipalityChoice} onChange={(event) => setMunicipalityChoice(event.target.value as "barueri" | "jundiai" | "campinas" | "other")}><option value="barueri">Barueri - SP</option><option value="jundiai">Jundiaí - SP</option><option value="campinas">Campinas - SP</option><option value="other">Outro município</option></select></label>
               {municipalityChoice === "other" && <label>Qual município? <span className="required-mark" aria-hidden="true">*</span><input name="municipality" required value={otherMunicipality} onChange={(event) => setOtherMunicipality(event.target.value)} placeholder="Ex.: Osasco - SP" /></label>}
               {municipalityChoice === "barueri" && <input type="hidden" name="municipality" value="Barueri - SP" />}
+              {municipalityChoice === "jundiai" && <input type="hidden" name="municipality" value="Jundiaí - SP" />}
+              {municipalityChoice === "campinas" && <input type="hidden" name="municipality" value="Campinas - SP" />}
               <label>Tipo de projeto<select name="project_type" defaultValue="Residencial unifamiliar"><option>Residencial unifamiliar</option><option>Residencial multifamiliar</option><option>Comercial</option><option>Institucional</option></select></label>
               <label>Zoneamento<input name="zoning" placeholder="Quando conhecido" /></label>
               <label className="wide">Endereço<input name="address" placeholder="Logradouro, número e bairro" /></label>
@@ -213,9 +242,10 @@ export default function App() {
             <div className="document-help"><strong>Documentos do processo</strong><span>Selecione todas as pranchas, levantamentos, RRTs e demais PDFs que serão protocolados.</span></div>
             <div className="uploads">
               <MultiFileField name="project_pdf" title="Documentos do projeto" required />
-              {municipalityChoice === "barueri"
-                ? <div className="municipal-basis"><span>✓</span><div><strong>Base municipal de Barueri incluída</strong><small>Código de Edificações — alteração LC nº 349/2015 · base cadastrada em 08/08/2026</small></div></div>
-                : <FileField name="regulation_pdf" title="Legislação local" required />}
+              {municipalityChoice === "barueri" && <div className="municipal-basis"><span>✓</span><div><strong>Base municipal de Barueri incluída</strong><small>Código de Edificações — alteração LC nº 349/2015 · base cadastrada em 08/08/2026</small></div></div>}
+              {municipalityChoice === "jundiai" && <div className="municipal-basis"><span>✓</span><div><strong>Base municipal de Jundiaí incluída</strong><small>LC 606/2021 até LC 627/2023 + Plano Diretor Lei 9.321/2019 até Lei 10.177/2024 · cadastrada em 09/08/2026</small></div></div>}
+              {municipalityChoice === "campinas" && <div className="municipal-basis"><span>✓</span><div><strong>Base municipal de Campinas incluída</strong><small>Código de Obras, LUOS, regra da APA, projeto simplificado e EIV/RIV · textos oficiais verificados em 09/08/2026</small></div></div>}
+              {municipalityChoice === "other" && <FileField name="regulation_pdf" title="Legislação local" required />}
               <FileField name="condominium_pdf" title="Regulamento do condomínio" />
               <FileField name="descriptive_memorial_pdf" title="Memorial descritivo" />
             </div>
@@ -242,7 +272,7 @@ export default function App() {
 
       {view === "result" && analysis && <Result analysis={analysis} origin={reportOrigin} onRestart={() => setView("home")} />}
 
-      <footer><span>© 2026 Aprova+ · Tecnologia de apoio à revisão técnica</span><nav><a href="/termos-de-uso.html">Termos de Uso</a><a href="/aviso-de-privacidade.html">Privacidade</a></nav></footer>
+      <footer><span>© 2026 Projeta+ · Tecnologia de apoio à revisão técnica</span><nav><a href="mailto:Contato@e-mail.com.br">Contato</a><a href="/termos-de-uso.html">Termos de Uso</a><a href="/aviso-de-privacidade.html">Privacidade</a></nav></footer>
     </div>
   );
 }
@@ -296,17 +326,17 @@ function Result({ analysis, origin, onRestart }: { analysis: DemoAnalysis; origi
   const s = analysis.summary;
   const annotatedItems = analysis.items.filter((item) => item.annotation);
   return <main className="result-page">
-    <div className="result-title"><div><span className="eyebrow">Relatório preliminar</span><h1>{analysis.project.name}</h1><p>{analysis.project.address} · {analysis.project.project_type}</p></div><button className="secondary" onClick={onRestart}>Nova análise</button></div>
+    <div className="result-title"><div><span className="eyebrow">Relatório preliminar</span><h1>{analysis.project.name}</h1><p>{analysis.project.municipality} · {analysis.project.address} · {analysis.project.project_type}</p></div><button className="secondary" onClick={onRestart}>Nova análise</button></div>
     {origin === "upload" && <aside className="report-mode"><strong>Documentos recebidos com sucesso</strong><p>Esta versão ainda não executa a conferência técnica dos arquivos enviados. O relatório abaixo demonstra o formato final e as marcações que serão geradas quando o motor de análise estiver concluído.</p></aside>}
     {analysis.legislation_basis && <section className="legislation-basis"><span>Base legal utilizada</span><strong>{analysis.legislation_basis.title}</strong><p>{analysis.legislation_basis.version} · cadastrada em {analysis.legislation_basis.registered_at}</p>{analysis.legislation_basis.source !== "#" && <a href={analysis.legislation_basis.source} target="_blank" rel="noreferrer">Consultar fonte oficial</a>}</section>}
     <section className="score-panel">
       <div className="score-ring" style={{ "--score": `${s.score * 3.6}deg` } as React.CSSProperties}><div><strong>{s.score}</strong><small>/100</small></div></div>
-      <div className="score-copy"><span>Índice preliminar de conformidade</span><h2>Revisão recomendada antes do protocolo</h2><p>A análise encontrou pontos que merecem ajuste e validação da equipe responsável.</p><div className="confidence"><span><i style={{ width: `${s.confidence}%` }} /></span>Confiança da análise automática: <strong>{s.confidence}%</strong></div></div>
-      <div className="metrics"><Metric value={s.compliant} label="Conformes" tone="green" /><Metric value={s.warnings} label="Alertas" tone="yellow" /><Metric value={s.non_compliant} label="Não conformes" tone="red" /><Metric value={s.not_identified} label="Não identificado" tone="gray" /></div>
+      <div className="score-copy"><span>Indicador preliminar de atendimento aos critérios analisados</span><h2>Revisão recomendada antes do protocolo</h2><p>O demonstrativo apresenta pontos que merecem conferência da equipe responsável.</p></div>
+      <div className="metrics"><Metric value={s.compliant} label="Aparentemente atendidos" tone="green" /><Metric value={s.warnings + s.non_compliant} label="Requerem revisão" tone="red" /><Metric value={s.not_identified} label="Não verificados" tone="gray" /></div>
     </section>
     <section className="plan-review"><div className="section-title"><div><span>Conferência visual</span><h2>Marcações na planta</h2></div><small>Exemplo demonstrativo</small></div><div className="plan-review-grid"><div className="annotated-plan" aria-label="Planta demonstrativa com três marcações técnicas">{annotatedItems.map((item) => item.annotation && <a href={`#report-${item.id}`} className="plan-marker" style={{ left: `${item.annotation.x}%`, top: `${item.annotation.y}%` }} aria-label={`Ver apontamento ${item.annotation.marker}: ${item.topic}`} key={item.id}>{item.annotation.marker}</a>)}</div><ol className="annotation-list">{annotatedItems.map((item) => item.annotation && <li key={item.id}><a href={`#report-${item.id}`}><b>{item.annotation.marker}</b><span><strong>{item.topic}</strong>{item.annotation.comment}</span></a></li>)}</ol></div></section>
-    <section className="report-card"><div className="section-title"><div><span>Análise detalhada</span><h2>Itens verificados</h2></div><small>{analysis.items.length} regras avaliadas</small></div><div className="table-wrap"><table><thead><tr><th>Item</th><th>Exigência</th><th>Projeto</th><th>Status</th><th>Fonte</th><th>Recomendação</th></tr></thead><tbody>{analysis.items.map(item => <tr key={item.id} id={`report-${item.id}`}><td><strong>{item.topic}</strong><small>{item.annotation ? `Marcação ${item.annotation.marker} na planta · ` : ""}{item.id}</small></td><td>{item.requirement}</td><td>{item.project_value}</td><td><span className={`badge ${item.status.toLowerCase()}`}>{statusLabel[item.status]}</span></td><td className="source">{item.source}</td><td>{item.annotation && <span className="annotation-comment">Comentário {item.annotation.marker}: {item.annotation.comment}</span>}{item.recommendation}</td></tr>)}</tbody></table></div></section>
-    <aside className="disclaimer"><strong>Importante</strong><p>{analysis.disclaimer}</p></aside>
+    <section className="report-card"><div className="section-title"><div><span>Conferência demonstrativa</span><h2>Critérios exibidos</h2><p className="status-explanation">“Não foi possível verificar” significa que o critério não foi analisado com os dados disponíveis; não significa que ele deixou de ser atendido.</p></div><small>{analysis.items.length} critérios no exemplo</small></div><div className="table-wrap"><table><thead><tr><th>Item</th><th>Exigência</th><th>Projeto</th><th>Classificação preliminar</th><th>Fonte consultada</th><th>Recomendação</th></tr></thead><tbody>{analysis.items.map(item => <tr key={item.id} id={`report-${item.id}`}><td><strong>{item.topic}</strong><small>{item.annotation ? `Marcação ${item.annotation.marker} na planta · ` : ""}{item.id}</small></td><td>{item.requirement}</td><td>{item.project_value}</td><td><span className={`badge ${item.status.toLowerCase()}`}>{statusLabel[item.status]}</span></td><td className="source">{item.source}</td><td>{item.annotation && <span className="annotation-comment">Comentário {item.annotation.marker}: {item.annotation.comment}</span>}{item.recommendation}</td></tr>)}</tbody></table></div></section>
+    <aside className="disclaimer"><strong>Ferramenta independente</strong><p>O resultado é preliminar, não constitui aprovação, laudo ou parecer técnico, não substitui o responsável técnico ou o órgão competente e não possui vínculo com prefeituras ou condomínios. {analysis.disclaimer}</p></aside>
   </main>;
 }
 

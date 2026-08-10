@@ -7,9 +7,11 @@ from fastapi import APIRouter, File, Form, HTTPException, UploadFile, status
 from app.models.analysis import AnalysisReceipt, AnalysisResponse
 from app.models.project import ProjectMetadata
 from app.services.analysis_service import AnalysisService
+from app.services.regulation_registry import RegulationRegistry
 
 router = APIRouter(prefix="/api/analyses", tags=["analyses"])
 service = AnalysisService()
+regulation_registry = RegulationRegistry()
 DEMO_PATH = Path(__file__).resolve().parents[1] / "data" / "demo_analysis.json"
 
 
@@ -17,6 +19,8 @@ DEMO_PATH = Path(__file__).resolve().parents[1] / "data" / "demo_analysis.json"
 async def create_analysis(
     project_name: Annotated[str, Form(min_length=1)],
     municipality: Annotated[str, Form(min_length=1)],
+    contact_email: Annotated[str, Form(min_length=3)],
+    accepted_terms: Annotated[bool, Form()] = False,
     project_type: Annotated[str | None, Form()] = None,
     address: Annotated[str | None, Form()] = None,
     lot_area: Annotated[float | None, Form(gt=0)] = None,
@@ -26,12 +30,18 @@ async def create_analysis(
     condominium_pdf: UploadFile | str | None = File(None),
     descriptive_memorial_pdf: UploadFile | str | None = File(None),
 ) -> AnalysisReceipt:
+    if not accepted_terms:
+        raise HTTPException(
+            status_code=400,
+            detail="É necessário aceitar os Termos de Uso e o Aviso de Privacidade antes do envio.",
+        )
+    if "@" not in contact_email or contact_email.startswith("@") or contact_email.endswith("@"):
+        raise HTTPException(status_code=400, detail="Informe um e-mail válido.")
     regulation_upload = None if isinstance(regulation_pdf, str) else regulation_pdf
     condominium_upload = None if isinstance(condominium_pdf, str) else condominium_pdf
     memorial_upload = None if isinstance(descriptive_memorial_pdf, str) else descriptive_memorial_pdf
-    is_barueri = municipality.strip().casefold() in {"barueri", "barueri - sp"}
     has_local_regulation = bool(regulation_upload and regulation_upload.filename)
-    if not is_barueri and not has_local_regulation:
+    if not regulation_registry.has_builtin(municipality) and not has_local_regulation:
         raise HTTPException(
             status_code=400,
             detail="A legislação local é obrigatória para outros municípios.",
@@ -40,6 +50,7 @@ async def create_analysis(
     metadata = ProjectMetadata(
         name=project_name,
         municipality=municipality,
+        contact_email=contact_email,
         project_type=project_type,
         address=address,
         lot_area=lot_area,
@@ -55,6 +66,11 @@ async def create_analysis(
         },
     )
     return AnalysisReceipt.model_validate(analysis.model_dump())
+
+
+@router.get("/municipalities", response_model=list[dict[str, Any]])
+def get_municipalities() -> list[dict[str, Any]]:
+    return regulation_registry.list_municipalities()
 
 
 @router.get("/demo", response_model=dict[str, Any])

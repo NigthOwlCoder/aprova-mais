@@ -66,12 +66,16 @@ class AnalysisService:
             # The original PDFs are removed even when one document cannot be read.
             shutil.rmtree(destination, ignore_errors=True)
 
+        created_at = datetime.now(UTC)
         analysis = AnalysisResponse(
             id=analysis_id,
             status=AnalysisStatus.DOCUMENTS_READ,
-            created_at=datetime.now(UTC),
+            created_at=created_at,
             project=metadata,
             documents=documents,
+            accepted_terms_at=created_at,
+            terms_version="1.2",
+            privacy_version="1.2",
         )
         self._analysis_path(analysis_id).write_text(
             analysis.model_dump_json(indent=2), encoding="utf-8"

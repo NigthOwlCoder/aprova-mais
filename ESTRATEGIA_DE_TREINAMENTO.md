@@ -1,4 +1,4 @@
-# Estratégia de Treinamento do Aprova+
+# Estratégia de Treinamento do Projeta+
 
 Versão: 1.0 — 8 de agosto de 2026
 
