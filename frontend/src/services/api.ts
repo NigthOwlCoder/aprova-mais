@@ -17,9 +17,9 @@ export async function loadDemo(): Promise<DemoAnalysis> {
   return parseResponse<DemoAnalysis>(await fetch(`${API_URL}/api/analyses/demo`));
 }
 
-export async function createAnalysis(data: FormData): Promise<{ id: string }> {
+export async function createAnalysis(data: FormData, token: string): Promise<{ id: string }> {
   try {
-    return parseResponse<{ id: string }>(await fetch(`${API_URL}/api/analyses`, { method: "POST", body: data }));
+    return parseResponse<{ id: string }>(await fetch(`${API_URL}/api/analyses`, { method: "POST", headers: partnerHeaders(token), body: data }));
   } catch (error) {
     if (error instanceof TypeError) throw new Error("A conexão com o servidor foi interrompida. Aguarde alguns segundos e tente novamente.");
     throw error;
@@ -42,6 +42,10 @@ export interface PartnerProject {
     notes?: string;
     municipal_feedback: boolean;
     improvement_consent: boolean;
+    accepted_terms_at?: string;
+    terms_version?: string;
+    training_consent_at?: string;
+    training_consent_version?: string;
     documents: Array<{ name: string; content_type: string; size_bytes: number }>;
   }>;
   feedback: Array<{

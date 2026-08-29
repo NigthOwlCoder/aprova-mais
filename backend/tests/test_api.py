@@ -10,6 +10,23 @@ from fastapi.testclient import TestClient
 from app.main import app
 
 client = TestClient(app)
+_analysis_headers: dict[str, str] | None = None
+
+
+def analysis_headers() -> dict[str, str]:
+    global _analysis_headers
+    if _analysis_headers is None:
+        requested = client.post("/api/homologation/access-requests", json={
+            "email": "analise@example.com", "full_name": "Parceira de Análise", "professional_role": "Arquiteta",
+            "password": "SenhaSegura123!", "accepted_terms": True,
+        })
+        approved = client.post(f"/api/homologation/admin/testers/{requested.json()['id']}/approve", headers={"X-Admin-Key": "test-admin-key"})
+        activated = client.post("/api/homologation/activate", json={
+            "email": "analise@example.com", "invite_code": approved.json()["invite_code"], "accepted_terms": True,
+            "full_name": "Parceira de Análise", "professional_role": "Arquiteta", "password": "SenhaSegura123!",
+        })
+        _analysis_headers = {"X-Partner-Token": activated.json()["token"]}
+    return _analysis_headers
 
 
 def make_pdf() -> bytes:
@@ -30,7 +47,8 @@ def test_health() -> None:
 def test_create_and_get_analysis() -> None:
     created = client.post(
         "/api/analyses",
-        data={"project_name": "Residência Barueri", "municipality": "Barueri", "contact_email": "teste@example.com", "accepted_terms": "true"},
+        headers=analysis_headers(),
+        data={"project_name": "Residência Barueri", "municipality": "Barueri", "contact_email": "analise@example.com", "accepted_terms": "true", "training_consent": "true"},
         files={"project_pdf": ("projeto.pdf", make_pdf(), "application/pdf")},
     )
 
@@ -40,39 +58,62 @@ def test_create_and_get_analysis() -> None:
     assert payload["documents"][0]["page_count"] == 1
     assert "extracted_text" not in payload["documents"][0]
 
-    fetched = client.get(f"/api/analyses/{payload['id']}")
+    fetched = client.get(f"/api/analyses/{payload['id']}", headers=analysis_headers())
     assert fetched.status_code == 200
     assert fetched.json()["id"] == payload["id"]
     assert fetched.json()["accepted_terms_at"] is not None
-    assert fetched.json()["terms_version"] == "1.2"
-    assert fetched.json()["privacy_version"] == "1.2"
+    assert fetched.json()["terms_version"] == "Beta 1.0"
+    assert fetched.json()["privacy_version"] == "Beta 1.0"
+    assert fetched.json()["training_consent_at"] is not None
     assert "Area do terreno" in fetched.json()["documents"][0]["extracted_text"]
 
 
 def test_get_unknown_analysis() -> None:
-    response = client.get("/api/analyses/00000000-0000-0000-0000-000000000000")
+    response = client.get("/api/analyses/00000000-0000-0000-0000-000000000000", headers=analysis_headers())
     assert response.status_code == 404
 
 
 def test_analysis_requires_express_acceptance() -> None:
     response = client.post(
         "/api/analyses",
-        data={"project_name": "Casa", "municipality": "Barueri - SP", "contact_email": "teste@example.com"},
+        headers=analysis_headers(),
+        data={"project_name": "Casa", "municipality": "Barueri - SP", "contact_email": "analise@example.com", "training_consent": "true"},
         files={"project_pdf": ("projeto.pdf", make_pdf(), "application/pdf")},
     )
     assert response.status_code == 400
     assert "aceitar os Termos de Uso" in response.json()["detail"]
 
 
+def test_analysis_requires_authenticated_test_area() -> None:
+    response = client.post(
+        "/api/analyses",
+        data={"project_name": "Casa", "municipality": "Barueri - SP", "contact_email": "analise@example.com", "accepted_terms": "true", "training_consent": "true"},
+        files={"project_pdf": ("projeto.pdf", make_pdf(), "application/pdf")},
+    )
+    assert response.status_code == 401
+
+
+def test_analysis_requires_separate_training_consent() -> None:
+    response = client.post(
+        "/api/analyses",
+        headers=analysis_headers(),
+        data={"project_name": "Casa", "municipality": "Barueri - SP", "contact_email": "analise@example.com", "accepted_terms": "true"},
+        files={"project_pdf": ("projeto.pdf", make_pdf(), "application/pdf")},
+    )
+    assert response.status_code == 400
+    assert "treinamento" in response.json()["detail"]
+
+
 def test_delete_analysis() -> None:
     created = client.post(
         "/api/analyses",
-        data={"project_name": "Projeto descartável", "municipality": "Barueri", "contact_email": "teste@example.com", "accepted_terms": "true"},
+        headers=analysis_headers(),
+        data={"project_name": "Projeto descartável", "municipality": "Barueri", "contact_email": "analise@example.com", "accepted_terms": "true", "training_consent": "true"},
         files={"project_pdf": ("projeto.pdf", make_pdf(), "application/pdf")},
     )
     analysis_id = created.json()["id"]
-    assert client.delete(f"/api/analyses/{analysis_id}").status_code == 204
-    assert client.get(f"/api/analyses/{analysis_id}").status_code == 404
+    assert client.delete(f"/api/analyses/{analysis_id}", headers=analysis_headers()).status_code == 204
+    assert client.get(f"/api/analyses/{analysis_id}", headers=analysis_headers()).status_code == 404
 
 
 def test_demo_analysis_has_required_status_mix() -> None:
@@ -93,7 +134,8 @@ def test_demo_analysis_has_required_status_mix() -> None:
 def test_create_analysis_with_multiple_project_documents() -> None:
     response = client.post(
         "/api/analyses",
-        data={"project_name": "Casa MA", "municipality": "Barueri", "contact_email": "teste@example.com", "accepted_terms": "true"},
+        headers=analysis_headers(),
+        data={"project_name": "Casa MA", "municipality": "Barueri", "contact_email": "analise@example.com", "accepted_terms": "true", "training_consent": "true"},
         files=[
             ("project_pdf", ("prancha-01.pdf", make_pdf(), "application/pdf")),
             ("project_pdf", ("rrt-projeto.pdf", make_pdf(), "application/pdf")),
@@ -106,7 +148,8 @@ def test_create_analysis_with_multiple_project_documents() -> None:
 def test_invalid_pdf_identifies_the_file() -> None:
     response = client.post(
         "/api/analyses",
-        data={"project_name": "Casa MA", "municipality": "Barueri - SP", "contact_email": "teste@example.com", "accepted_terms": "true"},
+        headers=analysis_headers(),
+        data={"project_name": "Casa MA", "municipality": "Barueri - SP", "contact_email": "analise@example.com", "accepted_terms": "true", "training_consent": "true"},
         files={"project_pdf": ("prancha-problematica.pdf", b"not-a-pdf", "application/pdf")},
     )
     assert response.status_code == 422
@@ -116,7 +159,8 @@ def test_invalid_pdf_identifies_the_file() -> None:
 def test_empty_optional_file_fields_are_ignored() -> None:
     response = client.post(
         "/api/analyses",
-        data={"project_name": "Casa MA", "municipality": "Barueri - SP", "contact_email": "teste@example.com", "accepted_terms": "true"},
+        headers=analysis_headers(),
+        data={"project_name": "Casa MA", "municipality": "Barueri - SP", "contact_email": "analise@example.com", "accepted_terms": "true", "training_consent": "true"},
         files=[
             ("project_pdf", ("projeto.pdf", make_pdf(), "application/pdf")),
             ("regulation_pdf", ("", b"", "application/octet-stream")),
@@ -133,7 +177,8 @@ def test_empty_optional_file_fields_are_ignored() -> None:
 def test_other_municipality_requires_local_regulation() -> None:
     response = client.post(
         "/api/analyses",
-        data={"project_name": "Casa", "municipality": "Osasco - SP", "contact_email": "teste@example.com", "accepted_terms": "true"},
+        headers=analysis_headers(),
+        data={"project_name": "Casa", "municipality": "Osasco - SP", "contact_email": "analise@example.com", "accepted_terms": "true", "training_consent": "true"},
         files={"project_pdf": ("projeto.pdf", make_pdf(), "application/pdf")},
     )
     assert response.status_code == 400
@@ -143,7 +188,8 @@ def test_other_municipality_requires_local_regulation() -> None:
 def test_other_municipality_accepts_local_regulation() -> None:
     response = client.post(
         "/api/analyses",
-        data={"project_name": "Casa", "municipality": "Osasco - SP", "contact_email": "teste@example.com", "accepted_terms": "true"},
+        headers=analysis_headers(),
+        data={"project_name": "Casa", "municipality": "Osasco - SP", "contact_email": "analise@example.com", "accepted_terms": "true", "training_consent": "true"},
         files=[
             ("project_pdf", ("projeto.pdf", make_pdf(), "application/pdf")),
             ("regulation_pdf", ("legislacao-local.pdf", make_pdf(), "application/pdf")),
@@ -156,7 +202,8 @@ def test_other_municipality_accepts_local_regulation() -> None:
 def test_jundiai_uses_registered_municipal_basis() -> None:
     response = client.post(
         "/api/analyses",
-        data={"project_name": "Casa Jundiaí", "municipality": "Jundiaí - SP", "contact_email": "teste@example.com", "accepted_terms": "true"},
+        headers=analysis_headers(),
+        data={"project_name": "Casa Jundiaí", "municipality": "Jundiaí - SP", "contact_email": "analise@example.com", "accepted_terms": "true", "training_consent": "true"},
         files={"project_pdf": ("projeto.pdf", make_pdf(), "application/pdf")},
     )
     assert response.status_code == 201
@@ -168,7 +215,8 @@ def test_jundiai_uses_registered_municipal_basis() -> None:
 def test_campinas_uses_registered_municipal_basis() -> None:
     response = client.post(
         "/api/analyses",
-        data={"project_name": "Casa Campinas", "municipality": "Campinas - SP", "contact_email": "teste@example.com", "accepted_terms": "true"},
+        headers=analysis_headers(),
+        data={"project_name": "Casa Campinas", "municipality": "Campinas - SP", "contact_email": "analise@example.com", "accepted_terms": "true", "training_consent": "true"},
         files={"project_pdf": ("projeto.pdf", make_pdf(), "application/pdf")},
     )
     assert response.status_code == 201
@@ -221,7 +269,7 @@ def test_partner_homologation_flow() -> None:
     version = client.post(
         f"/api/homologation/projects/{project_id}/versions",
         headers=headers,
-        data={"label": "Envio inicial", "stage": "submitted", "municipal_feedback": "false"},
+        data={"label": "Envio inicial", "stage": "submitted", "accepted_terms": "true", "municipal_feedback": "false", "improvement_consent": "true"},
         files=[("documents", ("planta-r01.pdf", make_pdf(), "application/pdf"))],
     )
     assert version.status_code == 200

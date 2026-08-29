@@ -87,7 +87,11 @@ export default function App() {
     setView("processing");
     let receipt: { id: string };
     try {
-      receipt = await createAnalysis(formData);
+      const token = localStorage.getItem("confere_mais_partner_token") ?? "";
+      const partnerEmail = localStorage.getItem("confere_mais_partner_email") ?? "";
+      if (!token || !partnerEmail) throw new Error("Entre na Área de teste antes de iniciar uma análise.");
+      formData.set("contact_email", partnerEmail);
+      receipt = await createAnalysis(formData, token);
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Não foi possível enviar o projeto. Tente novamente.");
       setView("form");
@@ -154,7 +158,7 @@ export default function App() {
             <button onClick={() => openDemo()}>Demonstração</button>
             <a href="#planos">Planos</a>
           </nav>
-          <button className="login-button" onClick={() => setView("partner")}>Área de parceiros</button>
+          <button className="login-button" onClick={() => setView("partner")}>Área de teste</button>
         </>}
       </header>
 
@@ -171,7 +175,7 @@ export default function App() {
                 <p><strong>Versão demonstrativa:</strong> os documentos enviados ainda não são submetidos a uma conferência técnica completa. O relatório apresentado demonstra o formato previsto para o serviço.</p>
               </div>
               <div className="hero-actions">
-                <button className="primary" onClick={() => setView("form")}>Nova Análise <span>→</span></button>
+                <button className="primary" onClick={() => setView("partner")}>Acessar área de teste <span>→</span></button>
                 <button className="secondary" onClick={() => openDemo()}>Carregar Demonstração</button>
               </div>
               {error && <p className="error" role="alert">{error}</p>}
@@ -213,7 +217,7 @@ export default function App() {
           </section>
           <section className="plans-cta" id="planos">
             <div><span>Acesso gratuito na fase de testes</span><h2>Revise com mais segurança. Organize melhor o protocolo.</h2><p>Todos os recursos estão gratuitos. Planos pagos serão apresentados somente quando a conferência estiver tecnicamente implementada e testada.</p></div>
-            <button className="primary" onClick={() => setView("form")}>Nova Análise <span>→</span></button>
+            <button className="primary" onClick={() => setView("partner")}>Acessar área de teste <span>→</span></button>
           </section>
         </main>
       )}
@@ -229,7 +233,6 @@ export default function App() {
           <form className="analysis-form" onSubmit={submitAnalysis}>
             <p className="required-legend"><span>*</span> Campos obrigatórios</p>
             <div className="form-grid">
-              <label className="wide">Seu e-mail <span className="required-mark" aria-hidden="true">*</span><input name="contact_email" type="email" required autoComplete="email" placeholder="voce@exemplo.com" /><small>Na Fase 1, este é o único dado solicitado para seu cadastro.</small></label>
               <label>Nome do projeto <span className="required-mark" aria-hidden="true">*</span><input name="project_name" required placeholder="Ex.: Residência Alameda" /></label>
               <label>Município atendido <span className="required-mark" aria-hidden="true">*</span><select required value={municipalityChoice} onChange={(event) => setMunicipalityChoice(event.target.value as "barueri" | "jundiai" | "campinas" | "other")}><option value="barueri">Barueri - SP</option><option value="jundiai">Jundiaí - SP</option><option value="campinas">Campinas - SP</option><option value="other">Outro município</option></select></label>
               {municipalityChoice === "other" && <label>Qual município? <span className="required-mark" aria-hidden="true">*</span><input name="municipality" required value={otherMunicipality} onChange={(event) => setOtherMunicipality(event.target.value)} placeholder="Ex.: Osasco - SP" /></label>}
@@ -251,7 +254,8 @@ export default function App() {
               <FileField name="condominium_pdf" title="Regulamento do condomínio" />
               <FileField name="descriptive_memorial_pdf" title="Memorial descritivo" />
             </div>
-            <label className="terms-check"><input name="accepted_terms" type="checkbox" required /><span><b className="required-mark" aria-hidden="true">*</b> Li e aceito os <a href="/termos-de-uso.html" target="_blank">Termos de Uso</a> e o <a href="/aviso-de-privacidade.html" target="_blank">Aviso de Privacidade</a>. Os documentos não serão usados para treinamento sem uma autorização voluntária e separada.</span></label>
+            <label className="terms-check"><input name="accepted_terms" type="checkbox" required /><span><b className="required-mark" aria-hidden="true">*</b> Li e aceito os <a href="/termos-de-uso.html" target="_blank">Termos de Uso</a> e o <a href="/aviso-de-privacidade.html" target="_blank">Aviso de Privacidade</a>.</span></label>
+            <label className="terms-check"><input name="training_consent" type="checkbox" required /><span><b className="required-mark" aria-hidden="true">*</b> Li o <a href="/consentimento-aprendizagem.html" target="_blank">Termo de Consentimento</a> e autorizo o uso das plantas, documentos e retornos da Prefeitura deste envio para desenvolvimento, treinamento, teste, avaliação e aprimoramento do Confere+. Declaro possuir as autorizações necessárias.</span></label>
             {error && <p className="error" role="alert">{error}</p>}
             <button className="primary submit" type="submit">Analisar projeto <span>→</span></button>
           </form>
@@ -272,12 +276,12 @@ export default function App() {
         </main>
       )}
 
-      {view === "partner" && <PartnerPortal onExit={() => setView("home")} />}
+      {view === "partner" && <PartnerPortal onExit={() => setView("home")} onNewAnalysis={() => setView("form")} />}
       {view === "admin" && <AdminPortal onExit={() => setView("home")} />}
 
       {view === "result" && analysis && <Result analysis={analysis} origin={reportOrigin} onRestart={() => setView("home")} />}
 
-      <footer><span>© 2026 Confere+ · Tecnologia de apoio à revisão técnica</span><nav><a href="mailto:contato.conferemais@gmail.com">Contato</a><a href="/termos-de-uso.html">Termos de Uso</a><a href="/aviso-de-privacidade.html">Privacidade</a><button className="footer-admin" onClick={() => setView("admin")}>Administração</button></nav></footer>
+      <footer><span>© 2026 Confere+ · Tecnologia de apoio à revisão técnica</span><nav><a href="mailto:contato.conferemais@gmail.com">Contato</a><a href="/termos-de-uso.html">Termos de Uso</a><a href="/aviso-de-privacidade.html">Privacidade</a><a href="/consentimento-aprendizagem.html">Consentimento</a><button className="footer-admin" onClick={() => setView("admin")}>Administração</button></nav></footer>
     </div>
   );
 }

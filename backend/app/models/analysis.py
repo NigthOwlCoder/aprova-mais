@@ -26,6 +26,8 @@ class AnalysisResponse(BaseModel):
     accepted_terms_at: datetime | None = None
     terms_version: str | None = None
     privacy_version: str | None = None
+    training_consent_at: datetime | None = None
+    training_consent_version: str | None = None
     disclaimer: str = DISCLAIMER
 
 

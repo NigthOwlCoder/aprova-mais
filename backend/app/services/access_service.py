@@ -23,7 +23,7 @@ from app.models.access import (
 from app.services.state_store import StateStore
 
 
-TERMS_VERSION = "1.2-beta"
+TERMS_VERSION = "Beta 1.0"
 INVITE_HOURS = 72
 NAMESPACE = "testers"
 

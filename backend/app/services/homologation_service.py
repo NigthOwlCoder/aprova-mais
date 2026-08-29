@@ -44,6 +44,10 @@ class HomologationService:
         payload = self._read(token)
         return [HomologationProject.model_validate(item) for item in payload["projects"]]
 
+    def validate_session(self, token: str) -> str:
+        """Return the authenticated partner e-mail for a valid session."""
+        return str(self._read(token)["email"])
+
     def create_project(self, token: str, data: HomologationProjectCreate) -> HomologationProject:
         payload = self._read(token)
         now = datetime.now(UTC)
@@ -70,10 +74,15 @@ class HomologationService:
         label: str,
         stage: ProjectStage,
         notes: str | None,
+        accepted_terms: bool,
         municipal_feedback: bool,
         improvement_consent: bool,
         files: list[UploadFile],
     ) -> HomologationProject:
+        if not accepted_terms:
+            raise HTTPException(status_code=400, detail="É necessário aceitar os Termos de Uso e o Aviso de Privacidade.")
+        if not improvement_consent:
+            raise HTTPException(status_code=400, detail="Nesta versão Beta, registre separadamente o consentimento de treinamento para este upload.")
         payload = self._read(token)
         project = self._find(payload, project_id)
         receipts: list[VersionDocument] = []
@@ -93,6 +102,7 @@ class HomologationService:
         if not receipts:
             raise HTTPException(status_code=400, detail="Selecione ao menos um PDF ou uma imagem.")
         versions = project.setdefault("versions", [])
+        consent_time = datetime.now(UTC)
         version = ProjectVersion(
             id=str(uuid4()),
             number=len(versions) + 1,
@@ -102,7 +112,11 @@ class HomologationService:
             documents=receipts,
             notes=notes.strip() if notes else None,
             municipal_feedback=municipal_feedback,
-            improvement_consent=improvement_consent if municipal_feedback else False,
+            improvement_consent=True,
+            accepted_terms_at=consent_time,
+            terms_version="Beta 1.0",
+            training_consent_at=consent_time,
+            training_consent_version="Beta 1.0",
         )
         versions.append(version.model_dump(mode="json"))
         project["updated_at"] = datetime.now(UTC).isoformat()

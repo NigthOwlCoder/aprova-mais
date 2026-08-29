@@ -1,68 +1,49 @@
 # Termos de Uso do Confere+
 
-Versão: 1.2 - 9 de agosto de 2026
+**Versão Beta 1.0 — vigência em 29 de agosto de 2026**
 
-## 1. Responsável pelo serviço
+## 1. Identificação e natureza
 
-Serviço: **Confere+ - fase de testes**
-E-mail de atendimento e contestação: **contato.conferemais@gmail.com**
+O Confere+ é uma ferramenta privada e independente, operada por NigthOwlCoder. Contato: **contato.conferemais@gmail.com**. Não possui vínculo com prefeituras, condomínios, conselhos profissionais ou outros órgãos responsáveis pela aprovação de projetos.
 
-## 2. Natureza e independência do serviço
+Seus resultados são preliminares, não constituem aprovação, certificação, laudo, parecer técnico ou assunção de responsabilidade técnica e não substituem profissional habilitado nem a decisão do órgão competente.
 
-O Confere+ é uma ferramenta privada e independente de apoio à organização documental e à revisão preliminar de projetos arquitetônicos. Não possui vínculo, credenciamento, representação ou parceria com prefeituras, condomínios, conselhos profissionais ou outros órgãos públicos.
+## 2. Finalidade da versão Beta
 
-O resultado é preliminar, não constitui aprovação, licença, laudo, parecer ou responsabilidade técnica e não substitui a avaliação do arquiteto, engenheiro ou outro profissional habilitado nem a decisão do órgão competente.
+A Beta 1.0 é um ambiente de testes destinado ao desenvolvimento, avaliação e aprimoramento do Confere+. Recebe documentos, extrai e organiza informações e produz relatórios demonstrativos. Os documentos não passam por conferência técnica completa e os relatórios não devem ser usados isoladamente para protocolar, aprovar, contratar ou executar obras e projetos.
 
-## 3. Escopo efetivamente disponível
+O desenvolvimento e treinamento dependem de consentimento específico, destacado e registrado, separado destes Termos.
 
-Esta versão é demonstrativa. Ela recebe PDFs, extrai texto, organiza metadados e apresenta o formato previsto para um relatório. Os documentos enviados ainda não passam por uma conferência técnica completa. Não se deve interpretar o relatório demonstrativo como conclusão sobre o projeto enviado.
+## 3. Escopo
 
-As bases municipais cadastradas são Barueri/SP, Jundiaí/SP e Campinas/SP. A identificação das normas, fontes, versões e datas de verificação aparece na interface e no relatório. Para outros municípios, o usuário deve fornecer a legislação local, sem que isso implique sua validação pela plataforma.
+As bases cadastradas abrangem Barueri/SP, Jundiaí/SP e Campinas/SP, conforme fontes, versões e datas indicadas no relatório. Isso não significa cobertura integral da legislação, normas técnicas, regras condominiais ou exigências administrativas. Documentos fornecidos para outros municípios não são considerados automaticamente autênticos, vigentes ou completos.
 
-O formulário admite projetos residenciais unifamiliares, residenciais multifamiliares, comerciais e institucionais. Nesta fase, essa seleção serve à organização do envio e não significa que todos os critérios técnicos dessas tipologias estejam cobertos.
+A plataforma poderá receber projetos residenciais unifamiliares, residenciais multifamiliares, comerciais e institucionais. O recebimento não significa análise de todos os critérios.
 
-## 4. Entrega, prazo e contestação
+## 4. Gratuidade
 
-Não há prazo garantido para emissão do relatório demonstrativo. A estimativa mostrada durante o processamento é operacional e varia conforme quantidade e tamanho dos arquivos. Ela não se refere ao prazo de análise ou aprovação de qualquer Prefeitura.
+O acesso à Beta é gratuito. Não há renovação, cobrança, cancelamento financeiro ou reembolso. Eventual plano pago será apresentado previamente, com preço, condições e aceite próprios.
 
-O usuário poderá encaminhar ao e-mail da seção 1 o código da análise, o item contestado e sua fonte. A resposta deverá preservar o histórico e indicar eventual retificação.
+## 5. Obrigações do usuário
 
-## 5. Gratuidade, cancelamento e reembolso
+O usuário declara possuir capacidade para aceitar estes Termos; titularidade ou autorização para os documentos; base legal para dados de terceiros; e compromisso de não enviar conteúdo ilícito, dados bancários, senhas ou informações estranhas à finalidade. Deve verificar o relatório com profissional habilitado e órgão competente, fornecer informações verdadeiras e respeitar direitos de terceiros.
 
-O acesso atual é gratuito. Não há pagamento, renovação automática ou reembolso aplicável nesta fase. Planos pagos, se criados, exigirão informação prévia de preço, condições de cancelamento e reembolso e concordância expressa do usuário antes de qualquer cobrança.
+## 6. Propriedade intelectual e confidencialidade
 
-## 6. Obrigações do usuário
+O envio não transfere propriedade nem direitos autorais. Os documentos serão confidenciais e usados para operar a plataforma e, com consentimento específico, desenvolver, testar, avaliar e aprimorar o Confere+. A licença é limitada, não exclusiva e gratuita durante o período necessário. Os documentos não serão publicados, vendidos nem disponibilizados a outros usuários como projetos identificáveis.
 
-O usuário declara possuir autorização e base legítima para enviar os arquivos e dados incluídos no projeto, inclusive quando pertencentes a clientes, proprietários ou terceiros. É proibido enviar conteúdo ilícito, malicioso, obtido sem autorização ou que viole direitos de terceiros.
+## 7. Responsabilidades
 
-Cabe ao usuário conferir os arquivos, revisar o relatório, consultar as fontes indicadas, cumprir prazos administrativos e submeter decisões técnicas ao responsável habilitado e aos órgãos competentes.
+O Confere+ responde pelo serviço dentro do escopo informado e das obrigações legais. O usuário e o responsável técnico permanecem responsáveis pela autoria, integridade, atualização, segurança e conformidade técnica. O Confere+ não assume responsabilidade técnica arquitetônica ou de engenharia, sem afastar direitos ou responsabilidades indisponíveis por lei.
 
-## 7. Documentos, confidencialidade e propriedade intelectual
+## 8. Suspensão e encerramento
 
-O envio não transfere ao Confere+ a propriedade dos projetos. O usuário concede autorização temporária e limitada para processar o material e disponibilizar o resultado solicitado.
-
-O Confere+ deve tratar plantas, projetos, memoriais e demais documentos como confidenciais, restringindo seu acesso ao necessário para operar, proteger e prestar suporte ao serviço. Nenhum arquivo ou conteúdo será usado para treinamento ou melhoria de modelos sem autorização voluntária, específica, separada e registrada para aquele projeto.
-
-## 8. Responsabilidades e limitações
-
-O Confere+ responde pela execução do serviço dentro do escopo informado, pela adoção de medidas compatíveis de segurança e confidencialidade e pelo cumprimento das obrigações legais que lhe forem aplicáveis.
-
-O usuário e o responsável técnico permanecem responsáveis pela autoria, integridade, atualização, compatibilização e conformidade técnica do projeto. O Confere+ não assume autoria ou responsabilidade técnica arquitetônica ou de engenharia.
-
-Por ser demonstrativo, o serviço pode apresentar indisponibilidade, atraso, omissões ou resultados incompletos. Eventual responsabilidade será apurada conforme a legislação aplicável, considerando o escopo informado, a conduta das partes e responsabilidades que não possam ser limitadas por lei. Não há exclusão total de responsabilidade.
+O acesso poderá ser suspenso por risco à segurança, abuso, fraude, violação destes Termos ou necessidade técnica. Sempre que possível, o usuário será informado.
 
 ## 9. Proteção de dados
 
-O tratamento de dados segue o [Aviso de Privacidade](AVISO_DE_PRIVACIDADE.md). Solicitações de titulares deverão ser encaminhadas ao canal indicado na seção 1, assim que preenchido.
+O tratamento segue o [Aviso de Privacidade](AVISO_DE_PRIVACIDADE.md). O aceite é obrigatório. O treinamento exige o [Termo de Consentimento](CONSENTIMENTO_APRENDIZAGEM.md) adicional e separado.
 
-## 10. Aceite e alterações
+## 10. Alterações e legislação
 
-O envio somente é permitido após aceite expresso destes Termos e do Aviso de Privacidade. A API também rejeita solicitações sem o registro de aceite.
-
-Alterações relevantes serão identificadas por nova versão e data. Quando uma mudança exigir novo consentimento ou aceite, ela não será aplicada retroativamente sem manifestação válida.
-
-## 11. Legislação
-
-Aplicam-se as leis brasileiras, incluindo a Lei Geral de Proteção de Dados Pessoais e as normas de proteção do consumidor quando cabíveis.
-
-Estes termos são preventivos e não substituem a revisão final de advogado contratado antes da cobrança ou abertura ampla ao público.
+Alterações relevantes terão nova versão e data. Quando exigido, haverá novo aceite ou consentimento. Aplicam-se as leis brasileiras, preservados os canais legais e direitos do consumidor.

@@ -49,6 +49,10 @@ class ProjectVersion(BaseModel):
     notes: str | None = None
     municipal_feedback: bool = False
     improvement_consent: bool = False
+    accepted_terms_at: datetime | None = None
+    terms_version: str | None = None
+    training_consent_at: datetime | None = None
+    training_consent_version: str | None = None
 
 
 class PartnerFeedbackCreate(BaseModel):

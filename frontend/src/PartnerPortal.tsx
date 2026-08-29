@@ -25,7 +25,7 @@ const verdictLabels = {
   unable_to_assess: "Não consegui avaliar",
 };
 
-export default function PartnerPortal({ onExit }: { onExit: () => void }) {
+export default function PartnerPortal({ onExit, onNewAnalysis }: { onExit: () => void; onNewAnalysis: () => void }) {
   const [token, setToken] = useState(() => localStorage.getItem(TOKEN_KEY) ?? "");
   const [email, setEmail] = useState(() => localStorage.getItem(EMAIL_KEY) ?? "");
   const [projects, setProjects] = useState<PartnerProject[]>([]);
@@ -121,7 +121,7 @@ export default function PartnerPortal({ onExit }: { onExit: () => void }) {
 
   if (!token) return <main className="partner-login access-page">
     <button className="back" onClick={onExit}>← Voltar ao site</button>
-    <section><span className="eyebrow">Programa fechado de testes</span><h1>Área dos parceiros</h1><p>O acesso nesta fase é exclusivo para profissionais convidados ou aprovados pela equipe do Confere+.</p>
+    <section><span className="eyebrow">Programa fechado de testes</span><h1>Área de teste</h1><p>O acesso nesta fase é exclusivo para profissionais convidados ou aprovados pela equipe do Confere+.</p>
       <div className="access-tabs"><button className={accessMode === "login" ? "active" : ""} onClick={() => setAccessMode("login")}>Entrar</button><button className={accessMode === "request" ? "active" : ""} onClick={() => setAccessMode("request")}>Solicitar participação</button><button className={accessMode === "invite" ? "active" : ""} onClick={() => setAccessMode("invite")}>Tenho convite</button></div>
       {accessMode === "login" ? <form className="access-form" onSubmit={login}>
         <label>E-mail *<input name="email" type="email" autoComplete="email" required /></label><label>Senha *<input name="password" type="password" autoComplete="current-password" required /></label>
@@ -144,7 +144,7 @@ export default function PartnerPortal({ onExit }: { onExit: () => void }) {
   </main>;
 
   if (active) return <main className="partner-page">
-    <div className="partner-toolbar"><button className="back" onClick={() => setActiveId("")}>← Todos os projetos</button><span>{email}</span></div>
+    <div className="partner-toolbar"><button className="back" onClick={() => setActiveId("")}>← Todos os projetos</button><div><button className="primary" onClick={onNewAnalysis}>Nova análise</button><span>{email}</span></div></div>
     <div className="project-heading"><div><span className="eyebrow">Projeto em homologação</span><h1>{active.name}</h1><p>{active.municipality}{active.project_type ? ` · ${active.project_type}` : ""}</p></div><strong>Versão {active.versions.length || "—"}</strong></div>
     {error && <p className="error">{error}</p>}
     <div className="partner-columns">
@@ -154,7 +154,8 @@ export default function PartnerPortal({ onExit }: { onExit: () => void }) {
         <label>PDFs ou fotos<input name="documents" type="file" accept="application/pdf,image/jpeg,image/png,.pdf,.jpg,.jpeg,.png" multiple required /></label>
         <label>Observações<textarea name="notes" placeholder="O que mudou nesta versão?" /></label>
         <label className="inline-check"><input name="municipal_feedback" type="checkbox" /> Este envio contém retorno da Prefeitura</label>
-        <label className="inline-check consent"><input name="improvement_consent" type="checkbox" /> Autorizo voluntariamente o uso desta devolutiva, após anonimização, para melhorar o Confere+.</label>
+        <label className="inline-check consent"><input name="accepted_terms" type="checkbox" required /> Li e aceito os <a href="/termos-de-uso.html" target="_blank">Termos de Uso</a> e o <a href="/aviso-de-privacidade.html" target="_blank">Aviso de Privacidade</a>.</label>
+        <label className="inline-check consent"><input name="improvement_consent" type="checkbox" required /> Li o <a href="/consentimento-aprendizagem.html" target="_blank">Termo de Consentimento</a> e autorizo o uso das plantas, documentos e retornos da Prefeitura deste envio para desenvolvimento, treinamento, teste, avaliação e aprimoramento do Confere+.</label>
         <button className="primary" disabled={busy}>Registrar versão</button><small>O protótipo registra metadados e nomes; os arquivos originais não são mantidos nesta etapa.</small>
       </form></section>
       <section className="partner-card"><h2>Avaliar um apontamento</h2><p>Seu retorno permite medir acertos, alertas indevidos e itens não identificados.</p><form onSubmit={addFeedback} className="stack-form">
@@ -173,7 +174,7 @@ export default function PartnerPortal({ onExit }: { onExit: () => void }) {
 
   return <main className="partner-page">
     <div className="partner-toolbar"><button className="back" onClick={onExit}>← Voltar ao site</button><div><span>{email}</span><button onClick={logout}>Sair</button></div></div>
-    <div className="project-heading"><div><span className="eyebrow">Programa de homologação</span><h1>Seus projetos</h1><p>Centralize versões, devolutivas e avaliações técnicas.</p></div></div>
+    <div className="project-heading"><div><span className="eyebrow">Área de teste</span><h1>Seus projetos</h1><p>Centralize versões, devolutivas e avaliações técnicas.</p></div><button className="primary" onClick={onNewAnalysis}>Nova análise</button></div>
     {error && <p className="error">{error}</p>}
     <div className="partner-columns dashboard-columns"><section className="partner-card"><h2>Novo projeto</h2><form onSubmit={createProject} className="stack-form"><label>Nome do projeto<input name="name" required placeholder="Ex.: Residência Alameda" /></label><label>Município<input name="municipality" required placeholder="Ex.: Barueri - SP" /></label><label>Tipologia<input name="project_type" placeholder="Ex.: Residencial unifamiliar" /></label><button className="primary" disabled={busy}>Criar projeto</button></form></section>
       <section className="project-list"><h2>Projetos cadastrados</h2>{!projects.length && <p className="empty-state">Nenhum projeto cadastrado ainda.</p>}{projects.map((project) => <button key={project.id} onClick={() => setActiveId(project.id)}><span><strong>{project.name}</strong><small>{project.municipality} · {project.versions.length} versões</small></span><b>→</b></button>)}</section></div>

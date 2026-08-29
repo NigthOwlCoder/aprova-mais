@@ -29,6 +29,7 @@ class AnalysisService:
         self,
         metadata: ProjectMetadata,
         files: dict[str, UploadFile | list[UploadFile] | None],
+        training_consent: bool = False,
     ) -> AnalysisResponse:
         analysis_id = str(uuid4())
         destination = UPLOAD_ROOT / analysis_id
@@ -74,8 +75,10 @@ class AnalysisService:
             project=metadata,
             documents=documents,
             accepted_terms_at=created_at,
-            terms_version="1.2",
-            privacy_version="1.2",
+            terms_version="Beta 1.0",
+            privacy_version="Beta 1.0",
+            training_consent_at=created_at if training_consent else None,
+            training_consent_version="Beta 1.0" if training_consent else None,
         )
         self._analysis_path(analysis_id).write_text(
             analysis.model_dump_json(indent=2), encoding="utf-8"
