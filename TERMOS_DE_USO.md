@@ -2,8 +2,6 @@
 
 Versão: 1.2 - 9 de agosto de 2026
 
-> **Fase 1.** O cadastro do parceiro solicita nome, e-mail, atuação profissional e senha. Informações técnicas são cadastradas separadamente em cada projeto.
-
 ## 1. Responsável pelo serviço
 
 Serviço: **Confere+ - fase de testes**
