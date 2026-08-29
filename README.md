@@ -59,7 +59,7 @@ Nenhum arquivo é usado para treinamento sem autorização voluntária, específ
 
 O arquivo `render.yaml` configura o Confere+ como um único Web Service. O Render instala o backend, compila o frontend e disponibiliza ambos no mesmo endereço público.
 
-O mesmo Blueprint também cria um PostgreSQL com 1 GB, armazenamento automático desativado e acesso somente pela rede privada. `DATABASE_URL` é conectada automaticamente. Defina `CONFERE_ADMIN_KEY` manualmente no ambiente do serviço e nunca registre essa chave no Git.
+Durante a homologação inicial, o Blueprint cria um PostgreSQL gratuito com 1 GB e acesso somente pela rede privada. Bancos gratuitos do Render expiram após 30 dias: exporte os dados ou migre para um plano pago antes da data indicada no painel. `DATABASE_URL` é conectada automaticamente. Defina `CONFERE_ADMIN_KEY` manualmente no ambiente do serviço e nunca registre essa chave no Git.
 
 1. Envie esta pasta para um repositório no GitHub.
 2. No Render, selecione **New > Blueprint**.
