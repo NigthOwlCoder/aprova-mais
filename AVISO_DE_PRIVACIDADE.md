@@ -2,7 +2,7 @@
 
 Versão: 1.2 - 9 de agosto de 2026
 
-> **Fase 1.** O cadastro do usuário solicita somente o e-mail. Dados técnicos são solicitados apenas quando necessários à análise escolhida.
+> **Fase 1.** O cadastro do parceiro solicita nome, e-mail, atuação profissional e senha. Dados técnicos e municípios são vinculados a cada projeto, não ao perfil profissional.
 
 ## 1. Controlador e contato
 
@@ -13,7 +13,8 @@ Canal para direitos e incidentes: **contato.conferemais@gmail.com**
 
 | Dados | Finalidade |
 | --- | --- |
-| E-mail | identificar o cadastro de teste, permitir contato sobre a análise e atender solicitações |
+| Nome, e-mail e atuação profissional | identificar o parceiro, controlar o acesso de teste e permitir contato |
+| Senha protegida por hash e salt | autenticar o parceiro; a senha original não é armazenada nem pode ser recuperada pela plataforma |
 | Nome do projeto, município, tipologia, endereço, área e zoneamento | organizar a solicitação e selecionar a base municipal aplicável |
 | PDFs de plantas, memoriais, RRTs e documentos relacionados | extrair conteúdo e preparar a organização e o relatório demonstrativo |
 | Nomes de arquivos, tamanho, quantidade de páginas e texto extraído | rastreabilidade, processamento e apresentação do resultado |

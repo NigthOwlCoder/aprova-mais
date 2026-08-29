@@ -4,6 +4,7 @@ import {
   addProjectVersion,
   activateTester,
   createPartnerProject,
+  loginPartner,
   listPartnerProjects,
   requestTesterAccess,
   type PartnerProject,
@@ -31,7 +32,7 @@ export default function PartnerPortal({ onExit }: { onExit: () => void }) {
   const [activeId, setActiveId] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
-  const [accessMode, setAccessMode] = useState<"request" | "invite">("request");
+  const [accessMode, setAccessMode] = useState<"login" | "request" | "invite">("login");
   const [receipt, setReceipt] = useState("");
   const active = projects.find((project) => project.id === activeId);
 
@@ -49,9 +50,7 @@ export default function PartnerPortal({ onExit }: { onExit: () => void }) {
       const form = new FormData(event.currentTarget);
       const result = await requestTesterAccess({
         email: form.get("email"), full_name: form.get("full_name"), professional_role: form.get("professional_role"),
-        city_state: form.get("city_state"), municipalities: String(form.get("municipalities")).split(",").map(v => v.trim()).filter(Boolean),
-        project_types: form.getAll("project_types"), has_project: form.get("has_project") === "yes",
-        has_municipal_feedback: form.get("has_municipal_feedback") === "yes", interest: form.get("interest") || null,
+        password: form.get("password"),
         accepted_terms: form.get("accepted_terms") === "on",
       });
       setReceipt(`Solicitação recebida para ${result.email}. Você poderá entrar depois que receber seu convite.`);
@@ -66,14 +65,22 @@ export default function PartnerPortal({ onExit }: { onExit: () => void }) {
       const form = new FormData(event.currentTarget);
       const session = await activateTester({
         email: form.get("email"), invite_code: form.get("invite_code"), accepted_terms: form.get("accepted_terms") === "on",
-        full_name: form.get("full_name"), professional_role: form.get("professional_role"), city_state: form.get("city_state"),
-        municipalities: String(form.get("municipalities")).split(",").map(v => v.trim()).filter(Boolean),
-        project_types: form.getAll("project_types"), has_project: form.get("has_project") === "yes",
-        has_municipal_feedback: form.get("has_municipal_feedback") === "yes",
+        full_name: form.get("full_name"), professional_role: form.get("professional_role"), password: form.get("password"),
       });
       localStorage.setItem(TOKEN_KEY, session.token); localStorage.setItem(EMAIL_KEY, session.email);
       setEmail(session.email); setToken(session.token); setProjects([]);
     } catch (cause) { setError(cause instanceof Error ? cause.message : "Não foi possível ativar o acesso."); }
+    finally { setBusy(false); }
+  }
+
+  async function login(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault(); setBusy(true); setError("");
+    try {
+      const form = new FormData(event.currentTarget);
+      const session = await loginPartner(String(form.get("email")), String(form.get("password")));
+      localStorage.setItem(TOKEN_KEY, session.token); localStorage.setItem(EMAIL_KEY, session.email);
+      setEmail(session.email); setToken(session.token); setProjects([]);
+    } catch (cause) { setError(cause instanceof Error ? cause.message : "Não foi possível entrar."); }
     finally { setBusy(false); }
   }
 
@@ -115,24 +122,20 @@ export default function PartnerPortal({ onExit }: { onExit: () => void }) {
   if (!token) return <main className="partner-login access-page">
     <button className="back" onClick={onExit}>← Voltar ao site</button>
     <section><span className="eyebrow">Programa fechado de testes</span><h1>Área dos parceiros</h1><p>O acesso nesta fase é exclusivo para profissionais convidados ou aprovados pela equipe do Confere+.</p>
-      <div className="access-tabs"><button className={accessMode === "request" ? "active" : ""} onClick={() => setAccessMode("request")}>Solicitar participação</button><button className={accessMode === "invite" ? "active" : ""} onClick={() => setAccessMode("invite")}>Já tenho convite</button></div>
-      {accessMode === "request" ? <form className="access-form" onSubmit={requestAccess}>
+      <div className="access-tabs"><button className={accessMode === "login" ? "active" : ""} onClick={() => setAccessMode("login")}>Entrar</button><button className={accessMode === "request" ? "active" : ""} onClick={() => setAccessMode("request")}>Solicitar participação</button><button className={accessMode === "invite" ? "active" : ""} onClick={() => setAccessMode("invite")}>Tenho convite</button></div>
+      {accessMode === "login" ? <form className="access-form" onSubmit={login}>
+        <label>E-mail *<input name="email" type="email" autoComplete="email" required /></label><label>Senha *<input name="password" type="password" autoComplete="current-password" required /></label>
+        <button className="primary wide" disabled={busy}>{busy ? "Entrando…" : "Entrar"}</button>
+      </form> : accessMode === "request" ? <form className="access-form" onSubmit={requestAccess}>
         <label>E-mail *<input name="email" type="email" required /></label><label>Nome completo *<input name="full_name" required /></label>
         <label>Atuação profissional *<select name="professional_role" required><option value="">Selecione</option><option>Arquiteto(a)</option><option>Engenheiro(a)</option><option>Designer/Projetista</option><option>Outro profissional técnico</option></select></label>
-        <label>Cidade e estado *<input name="city_state" required placeholder="Ex.: Barueri - SP" /></label>
-        <label className="wide">Municípios em que atua *<input name="municipalities" required placeholder="Separe por vírgulas" /></label>
-        <fieldset className="wide"><legend>Tipos de projeto *</legend>{["Obra nova", "Reforma ou ampliação", "Regularização", "Outro"].map(v => <label key={v}><input type="checkbox" name="project_types" value={v} /> {v}</label>)}</fieldset>
-        <label>Tem projeto para testar agora? *<select name="has_project" required><option value="yes">Sim</option><option value="no">Não</option></select></label>
-        <label>Tem retorno da Prefeitura? *<select name="has_municipal_feedback" required><option value="no">Não</option><option value="yes">Sim</option></select></label>
-        <label className="wide">O que gostaria de testar? <textarea name="interest" maxLength={500} /></label>
+        <label>Crie uma senha *<input name="password" type="password" minLength={10} maxLength={128} autoComplete="new-password" required /><small>Mínimo de 10 caracteres.</small></label>
         <label className="terms-check wide"><input name="accepted_terms" type="checkbox" required /><span>Li e aceito os <a href="/termos-de-uso.html" target="_blank">Termos de Uso</a> e o <a href="/aviso-de-privacidade.html" target="_blank">Aviso de Privacidade</a>.</span></label>
         <button className="primary wide" disabled={busy}>{busy ? "Enviando…" : "Solicitar acesso"}</button>
       </form> : <form className="access-form" onSubmit={activate}>
         <label>E-mail autorizado *<input name="email" type="email" required /></label><label>Código do convite *<input name="invite_code" required /></label>
         <label>Nome completo *<input name="full_name" required /></label><label>Atuação profissional *<input name="professional_role" required placeholder="Ex.: Arquiteta" /></label>
-        <label>Cidade e estado *<input name="city_state" required /></label><label>Municípios em que atua<input name="municipalities" placeholder="Separe por vírgulas" /></label>
-        <fieldset className="wide"><legend>Tipos de projeto</legend>{["Obra nova", "Reforma ou ampliação", "Regularização", "Outro"].map(v => <label key={v}><input type="checkbox" name="project_types" value={v} /> {v}</label>)}</fieldset>
-        <input type="hidden" name="has_project" value="yes" /><input type="hidden" name="has_municipal_feedback" value="no" />
+        <label className="wide">Senha cadastrada *<input name="password" type="password" minLength={10} maxLength={128} autoComplete="current-password" required /><small>Se você recebeu um convite direto, crie sua senha agora.</small></label>
         <label className="terms-check wide"><input name="accepted_terms" type="checkbox" required /><span>Li e aceito os <a href="/termos-de-uso.html" target="_blank">Termos de Uso</a> e o <a href="/aviso-de-privacidade.html" target="_blank">Aviso de Privacidade</a>.</span></label>
         <button className="primary wide" disabled={busy}>{busy ? "Ativando…" : "Ativar meu acesso"}</button>
       </form>}

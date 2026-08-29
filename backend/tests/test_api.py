@@ -197,15 +197,14 @@ def test_production_frontend_is_served_by_backend() -> None:
 def test_partner_homologation_flow() -> None:
     request = client.post("/api/homologation/access-requests", json={
         "email": "arquiteta@example.com", "full_name": "Arquiteta Teste", "professional_role": "Arquiteta",
-        "city_state": "Barueri - SP", "municipalities": ["Barueri"], "project_types": ["Obra nova"],
-        "has_project": True, "has_municipal_feedback": True, "accepted_terms": True,
+        "password": "SenhaSegura123!", "accepted_terms": True,
     })
     assert request.status_code == 201
     approved = client.post(f"/api/homologation/admin/testers/{request.json()['id']}/approve", headers={"X-Admin-Key": "test-admin-key"})
     assert approved.status_code == 200
     session = client.post("/api/homologation/activate", json={
         "email": "arquiteta@example.com", "invite_code": approved.json()["invite_code"], "accepted_terms": True,
-        "full_name": "Arquiteta Teste", "professional_role": "Arquiteta", "city_state": "Barueri - SP",
+        "full_name": "Arquiteta Teste", "professional_role": "Arquiteta", "password": "SenhaSegura123!",
     })
     assert session.status_code == 201
     token = session.json()["token"]
@@ -236,20 +235,22 @@ def test_partner_homologation_flow() -> None:
     assert feedback.status_code == 200
     assert feedback.json()["feedback"][0]["verdict"] == "partial"
     assert client.get("/api/homologation/projects", headers=headers).json()[0]["id"] == project_id
+    relogin = client.post("/api/homologation/login", json={"email": "arquiteta@example.com", "password": "SenhaSegura123!"})
+    assert relogin.status_code == 201
 
 
 def test_admin_can_preapprove_email_and_activation_must_match() -> None:
     invite = client.post("/api/homologation/admin/invites", headers={"X-Admin-Key": "test-admin-key"}, json={"email": "convidado@example.com"})
     assert invite.status_code == 201
-    wrong = client.post("/api/homologation/activate", json={"email": "outro@example.com", "invite_code": invite.json()["invite_code"], "accepted_terms": True, "full_name": "Outro", "professional_role": "Arquiteto", "city_state": "Osasco - SP"})
+    wrong = client.post("/api/homologation/activate", json={"email": "outro@example.com", "invite_code": invite.json()["invite_code"], "accepted_terms": True, "full_name": "Outro", "professional_role": "Arquiteto", "password": "SenhaSegura123!"})
     assert wrong.status_code == 403
-    activated = client.post("/api/homologation/activate", json={"email": "convidado@example.com", "invite_code": invite.json()["invite_code"], "accepted_terms": True, "full_name": "Convidado", "professional_role": "Arquiteto", "city_state": "Osasco - SP"})
+    activated = client.post("/api/homologation/activate", json={"email": "convidado@example.com", "invite_code": invite.json()["invite_code"], "accepted_terms": True, "full_name": "Convidado", "professional_role": "Arquiteto", "password": "SenhaSegura123!"})
     assert activated.status_code == 201
 
 
 def test_suspension_invalidates_existing_partner_session() -> None:
     invite = client.post("/api/homologation/admin/invites", headers={"X-Admin-Key": "test-admin-key"}, json={"email": "suspenso@example.com", "full_name": "Teste Suspenso"}).json()
-    activated = client.post("/api/homologation/activate", json={"email": "suspenso@example.com", "invite_code": invite["invite_code"], "accepted_terms": True, "full_name": "Teste Suspenso", "professional_role": "Arquiteto", "city_state": "Barueri - SP"}).json()
+    activated = client.post("/api/homologation/activate", json={"email": "suspenso@example.com", "invite_code": invite["invite_code"], "accepted_terms": True, "full_name": "Teste Suspenso", "professional_role": "Arquiteto", "password": "SenhaSegura123!"}).json()
     changed = client.post(f"/api/homologation/admin/testers/{invite['tester']['id']}/status?new_status=suspended", headers={"X-Admin-Key": "test-admin-key"})
     assert changed.status_code == 200
     denied = client.get("/api/homologation/projects", headers={"X-Partner-Token": activated["token"]})

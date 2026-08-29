@@ -1,8 +1,10 @@
+import base64
 import hashlib
+import hmac
 import os
 import re
 from datetime import UTC, datetime, timedelta
-from secrets import token_urlsafe
+from secrets import token_bytes, token_urlsafe
 from uuid import uuid4
 
 from fastapi import HTTPException
@@ -10,6 +12,7 @@ from fastapi import HTTPException
 from app.models.access import (
     AdminInviteCreate,
     InviteResult,
+    PartnerLoginRequest,
     TesterActivationRequest,
     TesterApplicationCreate,
     TesterApplicationReceipt,
@@ -40,17 +43,15 @@ class AccessService:
         now = datetime.now(UTC)
         record = TesterRecord(
             id=str(uuid4()), email=email, full_name=data.full_name.strip(),
-            professional_role=data.professional_role.strip(), city_state=data.city_state.strip(),
-            municipalities=[item.strip() for item in data.municipalities if item.strip()],
-            project_types=[item.strip() for item in data.project_types if item.strip()],
-            has_project=data.has_project, has_municipal_feedback=data.has_municipal_feedback,
-            interest=data.interest.strip() if data.interest else None,
+            professional_role=data.professional_role.strip(),
             source=TesterSource.PUBLIC_REQUEST, status=TesterStatus.REQUESTED,
             created_at=now, updated_at=now, accepted_terms_at=now, terms_version=TERMS_VERSION,
         )
+        stored = record.model_dump(mode="json")
+        stored.update(self._password_fields(data.password))
         if existing:
             payload["testers"].remove(existing)
-        payload["testers"].append(record.model_dump(mode="json"))
+        payload["testers"].append(stored)
         self._write(payload)
         return TesterApplicationReceipt(id=record.id, status=record.status, email=record.email)
 
@@ -105,18 +106,24 @@ class AccessService:
             raise HTTPException(status_code=403, detail="Código de convite inválido.")
         record["full_name"] = data.full_name or record.get("full_name")
         record["professional_role"] = data.professional_role or record.get("professional_role")
-        record["city_state"] = data.city_state or record.get("city_state")
-        record["municipalities"] = data.municipalities or record.get("municipalities", [])
-        record["project_types"] = data.project_types or record.get("project_types", [])
-        record["has_project"] = data.has_project if data.has_project is not None else record.get("has_project")
-        record["has_municipal_feedback"] = data.has_municipal_feedback if data.has_municipal_feedback is not None else record.get("has_municipal_feedback")
-        if not record.get("full_name") or not record.get("professional_role") or not record.get("city_state"):
-            raise HTTPException(status_code=400, detail="Complete nome, perfil profissional e cidade/estado.")
+        if not record.get("full_name") or not record.get("professional_role"):
+            raise HTTPException(status_code=400, detail="Complete nome e atuação profissional.")
+        if record.get("password_hash"):
+            if not self._verify_password(data.password, record):
+                raise HTTPException(status_code=403, detail="A senha não corresponde ao cadastro.")
+        else:
+            record.update(self._password_fields(data.password))
         now = datetime.now(UTC)
         record.update(status=TesterStatus.ACTIVE, updated_at=now.isoformat(), accepted_terms_at=now.isoformat(), terms_version=TERMS_VERSION)
         record.pop("invite_hash", None)
         record["invite_expires_at"] = None
         self._write(payload)
+        return TesterRecord.model_validate(record)
+
+    def login(self, data: PartnerLoginRequest) -> TesterRecord:
+        record = self._by_email(self._read(), self._email(data.email))
+        if not record or record.get("status") != TesterStatus.ACTIVE or not self._verify_password(data.password, record):
+            raise HTTPException(status_code=401, detail="E-mail ou senha inválidos.")
         return TesterRecord.model_validate(record)
 
     def list_testers(self, admin_key: str) -> list[TesterRecord]:
@@ -157,6 +164,22 @@ class AccessService:
     @staticmethod
     def _matches(code: str, expected: str) -> bool:
         return hashlib.sha256(code.encode()).hexdigest() == expected
+
+    @staticmethod
+    def _password_fields(password: str) -> dict[str, str]:
+        salt = token_bytes(16)
+        digest = hashlib.scrypt(password.encode("utf-8"), salt=salt, n=2**14, r=8, p=1)
+        return {"password_salt": base64.b64encode(salt).decode(), "password_hash": base64.b64encode(digest).decode()}
+
+    @staticmethod
+    def _verify_password(password: str, record: dict) -> bool:
+        try:
+            salt = base64.b64decode(record["password_salt"])
+            expected = base64.b64decode(record["password_hash"])
+            actual = hashlib.scrypt(password.encode("utf-8"), salt=salt, n=2**14, r=8, p=1)
+            return hmac.compare_digest(actual, expected)
+        except (KeyError, ValueError):
+            return False
 
     @staticmethod
     def _email(value: str) -> str:

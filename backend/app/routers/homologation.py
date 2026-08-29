@@ -5,6 +5,7 @@ from fastapi import APIRouter, File, Form, Header, UploadFile, status
 from app.models.access import (
     AdminInviteCreate,
     InviteResult,
+    PartnerLoginRequest,
     TesterActivationRequest,
     TesterApplicationCreate,
     TesterApplicationReceipt,
@@ -35,6 +36,12 @@ def request_access(data: TesterApplicationCreate) -> TesterApplicationReceipt:
 @router.post("/activate", response_model=PartnerSessionResponse, status_code=status.HTTP_201_CREATED)
 def activate(data: TesterActivationRequest) -> PartnerSessionResponse:
     tester = access_service.activate(data)
+    return service.create_authorized_session(tester.email)
+
+
+@router.post("/login", response_model=PartnerSessionResponse, status_code=status.HTTP_201_CREATED)
+def login(data: PartnerLoginRequest) -> PartnerSessionResponse:
+    tester = access_service.login(data)
     return service.create_authorized_session(tester.email)
 
 

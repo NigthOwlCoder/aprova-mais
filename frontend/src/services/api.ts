@@ -58,9 +58,8 @@ function partnerHeaders(token: string, json = false): HeadersInit {
 }
 
 export interface TesterProfile {
-  id: string; email: string; full_name?: string; professional_role?: string; city_state?: string;
-  municipalities: string[]; project_types: string[]; has_project?: boolean; has_municipal_feedback?: boolean;
-  interest?: string; source: "public_request" | "admin_invite";
+  id: string; email: string; full_name?: string; professional_role?: string;
+  source: "public_request" | "admin_invite";
   status: "requested" | "preapproved" | "active" | "rejected" | "suspended" | "invite_expired";
   created_at: string; updated_at: string; invite_expires_at?: string;
 }
@@ -76,6 +75,12 @@ export async function requestTesterAccess(data: object) {
 export async function activateTester(data: object) {
   return parseResponse<{ token: string; email: string }>(await fetch(`${API_URL}/api/homologation/activate`, {
     method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data),
+  }));
+}
+
+export async function loginPartner(email: string, password: string) {
+  return parseResponse<{ token: string; email: string }>(await fetch(`${API_URL}/api/homologation/login`, {
+    method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email, password }),
   }));
 }
 
