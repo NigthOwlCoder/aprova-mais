@@ -1,4 +1,4 @@
-# Termos de Uso do Projeta+
+# Termos de Uso do Confere+
 
 Versão: 1.2 - 9 de agosto de 2026
 
@@ -6,12 +6,12 @@ Versão: 1.2 - 9 de agosto de 2026
 
 ## 1. Responsável pelo serviço
 
-Serviço: **Projeta+ - fase de testes**
-E-mail de atendimento e contestação: **Contato@e-mail.com.br**
+Serviço: **Confere+ - fase de testes**
+E-mail de atendimento e contestação: **contato.conferemais@gmail.com**
 
 ## 2. Natureza e independência do serviço
 
-O Projeta+ é uma ferramenta privada e independente de apoio à organização documental e à revisão preliminar de projetos arquitetônicos. Não possui vínculo, credenciamento, representação ou parceria com prefeituras, condomínios, conselhos profissionais ou outros órgãos públicos.
+O Confere+ é uma ferramenta privada e independente de apoio à organização documental e à revisão preliminar de projetos arquitetônicos. Não possui vínculo, credenciamento, representação ou parceria com prefeituras, condomínios, conselhos profissionais ou outros órgãos públicos.
 
 O resultado é preliminar, não constitui aprovação, licença, laudo, parecer ou responsabilidade técnica e não substitui a avaliação do arquiteto, engenheiro ou outro profissional habilitado nem a decisão do órgão competente.
 
@@ -41,15 +41,15 @@ Cabe ao usuário conferir os arquivos, revisar o relatório, consultar as fontes
 
 ## 7. Documentos, confidencialidade e propriedade intelectual
 
-O envio não transfere ao Projeta+ a propriedade dos projetos. O usuário concede autorização temporária e limitada para processar o material e disponibilizar o resultado solicitado.
+O envio não transfere ao Confere+ a propriedade dos projetos. O usuário concede autorização temporária e limitada para processar o material e disponibilizar o resultado solicitado.
 
-O Projeta+ deve tratar plantas, projetos, memoriais e demais documentos como confidenciais, restringindo seu acesso ao necessário para operar, proteger e prestar suporte ao serviço. Nenhum arquivo ou conteúdo será usado para treinamento ou melhoria de modelos sem autorização voluntária, específica, separada e registrada para aquele projeto.
+O Confere+ deve tratar plantas, projetos, memoriais e demais documentos como confidenciais, restringindo seu acesso ao necessário para operar, proteger e prestar suporte ao serviço. Nenhum arquivo ou conteúdo será usado para treinamento ou melhoria de modelos sem autorização voluntária, específica, separada e registrada para aquele projeto.
 
 ## 8. Responsabilidades e limitações
 
-O Projeta+ responde pela execução do serviço dentro do escopo informado, pela adoção de medidas compatíveis de segurança e confidencialidade e pelo cumprimento das obrigações legais que lhe forem aplicáveis.
+O Confere+ responde pela execução do serviço dentro do escopo informado, pela adoção de medidas compatíveis de segurança e confidencialidade e pelo cumprimento das obrigações legais que lhe forem aplicáveis.
 
-O usuário e o responsável técnico permanecem responsáveis pela autoria, integridade, atualização, compatibilização e conformidade técnica do projeto. O Projeta+ não assume autoria ou responsabilidade técnica arquitetônica ou de engenharia.
+O usuário e o responsável técnico permanecem responsáveis pela autoria, integridade, atualização, compatibilização e conformidade técnica do projeto. O Confere+ não assume autoria ou responsabilidade técnica arquitetônica ou de engenharia.
 
 Por ser demonstrativo, o serviço pode apresentar indisponibilidade, atraso, omissões ou resultados incompletos. Eventual responsabilidade será apurada conforme a legislação aplicável, considerando o escopo informado, a conduta das partes e responsabilidades que não possam ser limitadas por lei. Não há exclusão total de responsabilidade.
 

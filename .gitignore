@@ -13,3 +13,4 @@ backend/app/reports/*
 !backend/app/reports/.gitkeep
 backend/app/data/analyses/*
 !backend/app/data/analyses/.gitkeep
+runtime_data/

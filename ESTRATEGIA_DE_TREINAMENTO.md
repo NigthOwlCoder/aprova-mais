@@ -1,4 +1,4 @@
-# Estratégia de Treinamento do Projeta+
+# Estratégia de Treinamento do Confere+
 
 Versão: 1.0 — 8 de agosto de 2026
 

@@ -1,4 +1,4 @@
-# Projeta+
+# Confere+
 
 MVP para análise preliminar de conformidade de projetos arquitetônicos.
 
@@ -30,6 +30,22 @@ O botão **Carregar demonstração** apresenta o formato completo do relatório,
 
 Durante a fase atual de testes, o acesso é gratuito. Os planos pagos serão definidos somente depois da validação técnica do produto.
 
+## Área de homologação
+
+A opção **Área de parceiros** permite que profissionais solicitem participação ou ativem um convite previamente emitido. A administração aprova solicitações, pré-autoriza e-mails e pode suspender ou reativar acessos.
+
+Depois da ativação, os parceiros podem:
+
+- cadastrem seus projetos;
+- registrem cada conjunto documental como uma versão identificada;
+- enviem PDFs ou fotos de devolutivas da Prefeitura;
+- avaliem os apontamentos como corretos, parciais, incorretos ou não avaliáveis;
+- concedam, de forma separada e opcional, autorização para usar uma devolutiva anonimizada na melhoria do produto.
+
+O sistema usa PostgreSQL quando `DATABASE_URL` está configurada e SQLite em `runtime_data/confere.db` apenas no desenvolvimento local. O Blueprint cria o banco PostgreSQL, conecta-o pela rede privada do Render e bloqueia conexões externas. Os arquivos originais enviados pela área de homologação não são retidos; ficam registrados somente nome, tipo, tamanho e histórico da versão.
+
+Configure `CONFERE_ADMIN_KEY` com uma chave longa e exclusiva para habilitar o painel administrativo. Convites expiram em 72 horas e são vinculados ao e-mail autorizado. A chave administrativa atual é adequada somente para esta fase controlada; antes de ampliar o acesso, substitua-a por autenticação administrativa completa e banco PostgreSQL.
+
 ## Proteção de dados e treinamento
 
 - [Regra de proteção de dados](PROTECAO_DE_DADOS.md)
@@ -41,7 +57,9 @@ Nenhum arquivo é usado para treinamento sem autorização voluntária, específ
 
 ## Publicação no Render
 
-O arquivo `render.yaml` configura o Projeta+ como um único Web Service. O Render instala o backend, compila o frontend e disponibiliza ambos no mesmo endereço público.
+O arquivo `render.yaml` configura o Confere+ como um único Web Service. O Render instala o backend, compila o frontend e disponibiliza ambos no mesmo endereço público.
+
+O mesmo Blueprint também cria um PostgreSQL com 1 GB, armazenamento automático desativado e acesso somente pela rede privada. `DATABASE_URL` é conectada automaticamente. Defina `CONFERE_ADMIN_KEY` manualmente no ambiente do serviço e nunca registre essa chave no Git.
 
 1. Envie esta pasta para um repositório no GitHub.
 2. No Render, selecione **New > Blueprint**.

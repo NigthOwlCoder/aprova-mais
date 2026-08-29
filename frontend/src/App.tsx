@@ -1,8 +1,10 @@
 import { FormEvent, useEffect, useState } from "react";
 import { createAnalysis, loadDemo } from "./services/api";
 import type { DemoAnalysis, ItemStatus } from "./types/analysis";
+import PartnerPortal from "./PartnerPortal";
+import AdminPortal from "./AdminPortal";
 
-type View = "home" | "form" | "processing" | "result";
+type View = "home" | "form" | "processing" | "result" | "partner" | "admin";
 
 const statusLabel: Record<ItemStatus, string> = {
   COMPLIANT: "Critério aparentemente atendido",
@@ -143,7 +145,7 @@ export default function App() {
     <div className="app-shell">
       <header className="topbar">
         <button className="brand" onClick={() => setView("home")} aria-label="Voltar ao início">
-          <span className="brand-mark">P+</span><span>Projeta<strong>+</strong></span>
+          <span className="brand-mark">C+</span><span>Confere<strong>+</strong></span>
         </button>
         {view === "home" && <>
           <nav className="main-nav" aria-label="Navegação principal">
@@ -152,7 +154,7 @@ export default function App() {
             <button onClick={() => openDemo()}>Demonstração</button>
             <a href="#planos">Planos</a>
           </nav>
-          <button className="login-button" onClick={() => setView("form")}>Entrar</button>
+          <button className="login-button" onClick={() => setView("partner")}>Área de parceiros</button>
         </>}
       </header>
 
@@ -174,7 +176,7 @@ export default function App() {
               </div>
               {error && <p className="error" role="alert">{error}</p>}
             </div>
-            <div className="hero-visual" aria-hidden="true"><img src="/aprova-plus-hero.png" alt="" /></div>
+            <div className="hero-visual" aria-hidden="true"><img src="/confere-mais-hero.png" alt="" /></div>
             <div className="trust-row" aria-label="Características do serviço">
               <span>✓ Análise baseada na legislação</span>
               <span>✓ Relatórios técnicos</span>
@@ -270,9 +272,12 @@ export default function App() {
         </main>
       )}
 
+      {view === "partner" && <PartnerPortal onExit={() => setView("home")} />}
+      {view === "admin" && <AdminPortal onExit={() => setView("home")} />}
+
       {view === "result" && analysis && <Result analysis={analysis} origin={reportOrigin} onRestart={() => setView("home")} />}
 
-      <footer><span>© 2026 Projeta+ · Tecnologia de apoio à revisão técnica</span><nav><a href="mailto:Contato@e-mail.com.br">Contato</a><a href="/termos-de-uso.html">Termos de Uso</a><a href="/aviso-de-privacidade.html">Privacidade</a></nav></footer>
+      <footer><span>© 2026 Confere+ · Tecnologia de apoio à revisão técnica</span><nav><a href="mailto:contato.conferemais@gmail.com">Contato</a><a href="/termos-de-uso.html">Termos de Uso</a><a href="/aviso-de-privacidade.html">Privacidade</a><button className="footer-admin" onClick={() => setView("admin")}>Administração</button></nav></footer>
     </div>
   );
 }

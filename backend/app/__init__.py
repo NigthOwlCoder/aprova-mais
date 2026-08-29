@@ -1,1 +1,1 @@
-"""Projeta+ backend package."""
+"""Confere+ backend package."""

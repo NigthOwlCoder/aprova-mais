@@ -1,4 +1,4 @@
-# Aviso de Privacidade do Projeta+
+# Aviso de Privacidade do Confere+
 
 Versão: 1.2 - 9 de agosto de 2026
 
@@ -6,8 +6,8 @@ Versão: 1.2 - 9 de agosto de 2026
 
 ## 1. Controlador e contato
 
-Controlador nesta fase de testes: **Projeta+**
-Canal para direitos e incidentes: **Contato@e-mail.com.br**
+Controlador nesta fase de testes: **Confere+**
+Canal para direitos e incidentes: **contato.conferemais@gmail.com**
 
 ## 2. Dados tratados e finalidades
 
@@ -35,7 +35,7 @@ Dados podem ser tratados por fornecedores de hospedagem, armazenamento, seguran�
 
 Dependendo da região e da infraestrutura do fornecedor, poderá haver tratamento ou armazenamento fora do Brasil, inclusive nos Estados Unidos. Antes dos testes externos, deverão ser confirmadas a localização, as categorias de dados efetivamente armazenadas, os suboperadores, os prazos de logs e as salvaguardas de transferência internacional.
 
-No backend atual, os PDFs não são enviados à OpenAI nem a outro serviço de modelos. Essa declaração deverá ser revista antes de ativar qualquer integração externa. O Projeta+ não vende dados pessoais ou documentos.
+No backend atual, os PDFs não são enviados à OpenAI nem a outro serviço de modelos. Essa declaração deverá ser revista antes de ativar qualquer integração externa. O Confere+ não vende dados pessoais ou documentos.
 
 ## 5. Retenção e eliminação
 
